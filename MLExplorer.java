@@ -1,4 +1,5 @@
 import Common.ParametricFunction;
+import Controller.PlotController;
 import View.DemoButtons;
 import View.DemoPanel;
 import View.Plot;
@@ -19,6 +20,8 @@ public class MLExplorer extends Application {
      * This is the main class for ML Explorer.
      * It initiates the main view and attaches a model and a controller.
      */
+    
+    PlotController plotController;
     
     public static void main(String[] args){
         launch(args);
@@ -52,16 +55,12 @@ public class MLExplorer extends Application {
             @Override
             public void textEmitted(String text) {
                 System.out.println("demoPanel listener received message: "+text);
+                relayMessageToPlotController(text);
             }
         });
         
         // TEMP for Testing:
-        // Add a graphic in the DemoPanel center
-        Plot plot = new Plot(0.1, 400, 300, -8.0, 8.0, -6.0, 6.0);
-        demoPanel.setGraph(plot);
-        plot.addCircle(-1.0, 2.0, 3);
-        ParametricFunction cusp = new ParametricFunction(t -> t*t, t -> t*t*t, -2.0, 2.0);
-        plot.addParametricCurve(cusp);
+        plotController = new PlotController(demoPanel);
         
         Scene scene = new Scene(mainLayout, 600, 500);
         window.setScene(scene);
@@ -69,6 +68,13 @@ public class MLExplorer extends Application {
         
         demoPanel.setTitle("Changed Title");
         
+    }
+    
+    private void relayMessageToPlotController(String message){
+        // FOR TESTING
+        if (message == "play"){
+            plotController.addRandomCircle();
+        }
     }
 
 }
