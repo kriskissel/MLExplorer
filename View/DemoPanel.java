@@ -81,6 +81,10 @@ public class DemoPanel extends BorderPane {
             this.textListener.textEmitted(text);
         }
     }
+    
+    public void setGraph(Plot plot){
+        this.setCenter(plot);
+    }
 
 
     public void setTitle(String title){

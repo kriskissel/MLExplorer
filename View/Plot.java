@@ -1,6 +1,12 @@
 package View;
 import java.util.function.Function;
+
+import Common.ParametricFunction;
 import Common.Tuple;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,22 +18,28 @@ import javafx.scene.shape.Rectangle;
 public class Plot extends Pane implements PlotView {
         
     private Axes axes;
-    private Color plotColor = Color.ORANGE.deriveColor(0, 1, 1, 0.6);
+    private Color plotColor = Color.BLUE;
+    private Color backgroundColor = Color.BEIGE;
     private double tInc;
-
-    public Plot(double tInc, Axes axes) {
-        this.axes = axes;
+    
+    public Plot(double tInc, int width, int height, double xLow, double xHigh,
+            double yLow, double yHigh){
+        this.axes = new Axes(width, height, xLow, xHigh, 2*(xHigh-xLow), yLow, yHigh, 2*(yHigh-yLow));
         this.tInc = tInc;
 
         setMinSize(Pane.USE_PREF_SIZE, Pane.USE_PREF_SIZE);
         setPrefSize(axes.getPrefWidth(), axes.getPrefHeight());
         setMaxSize(Pane.USE_PREF_SIZE, Pane.USE_PREF_SIZE);
 
+        axes.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().setAll(axes);
+        
     }
 
     @Override
-    public void addParametricCurve(Function<Double, Tuple> f, double tMin, double tMax){
+    public void addParametricCurve(ParametricFunction f){
+        double tMin = f.getTMin();
+        double tMax = f.getTMax();
         Path path = new Path();
         path.setStroke(plotColor);
         path.setStrokeWidth(2);

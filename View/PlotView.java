@@ -1,11 +1,11 @@
 package View;
-import java.util.function.Function;
-import Common.Tuple;
+
+import Common.ParametricFunction;
 import javafx.scene.paint.Color;
 
 public interface PlotView {
 
-    public void addParametricCurve(Function<Double, Tuple> vectorFunction, double tMin, double tMax);
+    public void addParametricCurve(ParametricFunction vectorFunction);
     
     public void removeLast();
     

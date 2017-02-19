@@ -1,5 +1,7 @@
+import Common.ParametricFunction;
 import View.DemoButtons;
 import View.DemoPanel;
+import View.Plot;
 import View.StringListener;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -53,7 +55,15 @@ public class MLExplorer extends Application {
             }
         });
         
-        Scene scene = new Scene(mainLayout, 600, 400);
+        // TEMP for Testing:
+        // Add a graphic in the DemoPanel center
+        Plot plot = new Plot(0.1, 400, 300, -8.0, 8.0, -6.0, 6.0);
+        demoPanel.setGraph(plot);
+        plot.addCircle(-1.0, 2.0, 3);
+        ParametricFunction cusp = new ParametricFunction(t -> t*t, t -> t*t*t, -2.0, 2.0);
+        plot.addParametricCurve(cusp);
+        
+        Scene scene = new Scene(mainLayout, 600, 500);
         window.setScene(scene);
         window.show();
         
