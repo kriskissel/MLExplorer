@@ -84,6 +84,7 @@ public class DemoPanel extends BorderPane {
     
     public void setGraph(Plot plot){
         this.setCenter(plot);
+        //System.out.println(this.getChildren());
     }
 
 

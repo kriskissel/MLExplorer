@@ -1,5 +1,6 @@
 import Common.ParametricFunction;
 import Controller.PlotController;
+import Model.RandomModel;
 import View.DemoButtons;
 import View.DemoPanel;
 import View.Plot;
@@ -60,7 +61,7 @@ public class MLExplorer extends Application {
         });
         
         // TEMP for Testing:
-        plotController = new PlotController(demoPanel);
+        plotController = new PlotController(demoPanel, new RandomModel());
         
         Scene scene = new Scene(mainLayout, 600, 500);
         window.setScene(scene);
@@ -73,7 +74,19 @@ public class MLExplorer extends Application {
     private void relayMessageToPlotController(String message){
         // FOR TESTING
         if (message == "play"){
-            plotController.addRandomCircle();
+            plotController.play();
+        }
+        if (message == "pause"){
+            plotController.pause();
+        }
+        if (message == "speedup"){
+            plotController.speedUp();
+        }
+        if (message == "speeddown"){
+            plotController.speedDown();
+        }
+        if (message == "rewind") {
+            plotController.rewind();
         }
     }
 
