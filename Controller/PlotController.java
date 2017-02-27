@@ -1,7 +1,5 @@
 package Controller;
 
-import java.util.Random;
-
 import Common.ModelData;
 import Common.ModelInterface;
 import Common.ParametricFunction;
@@ -9,7 +7,7 @@ import Common.Tuple;
 import View.DemoPanel;
 import View.Plot;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
+import javafx.scene.paint.Color;
 
 /*
  * 
@@ -26,7 +24,9 @@ public class PlotController {
     ModelInterface model;
     ModelData currentData;
     boolean stopped = false;
-    int frameDelay = 2048; // delaye between frames for animation
+    long frameDelay = 512; // delay between frames for animation
+    int PLOT_WIDTH = 600;
+    int PLOT_HEIGHT = 450;
     
     
     // the constructor should also take a model class instance as a parameter and attach it
@@ -34,27 +34,48 @@ public class PlotController {
     public PlotController(DemoPanel demoPanel, ModelInterface model){
         this.demoPanel = demoPanel;
         this.model = model;
-        this.currentData = model.next();
-        this.plot = new Plot(0.1, 400, 300, -8.0, 8.0, -6.0, 6.0);
+        this.currentData = model.first();
+        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
         demoPanel.setGraph(plot);
-        //ParametricFunction cusp = new ParametricFunction(t -> t*t, t -> t*t*t, -2.0, 2.0);
-        //plot.addParametricCurve(cusp);
-        //plot.addCircle(-1.0,  2.0,  4.0);
         setPlot();
     }
     
     private void setPlot(){
         // for now, we just draw points and curves, we'll save coloring based on classes for later
-        for (Tuple point : currentData.getPoints()){
-            plot.addCircle(point.getX(), point.getY(), 3);
+        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
+        demoPanel.setGraph(plot);
+        for (int i = 0; i < currentData.getPoints().size(); i++){
+            Tuple point = currentData.getPoints().get(i);
+            if (currentData.getPointClass().get(i) == 2){
+                plot.setPlotColor(Color.BLACK);
+            }
+            else if (currentData.getPointClass().get(i) == 1){
+                plot.setPlotColor(Color.BLUE);
+            }
+            else  if (currentData.getPointClass().get(i) == -1){
+                plot.setPlotColor(Color.RED);
+            }
+            
+            plot.addCircle(point.getX(), point.getY(), 5);
         }
-        for (ParametricFunction f : currentData.getCurves()){
+        
+        for (int i = 0; i < currentData.getCurves().size(); i++){
+            ParametricFunction f = currentData.getCurves().get(i);
+            if (currentData.getCurveClass().get(i) == 2){
+                plot.setPlotColor(Color.BLACK);
+            }
+            else if (currentData.getCurveClass().get(i) == 1){
+                plot.setPlotColor(Color.BLUE);
+            }
+            else  if (currentData.getCurveClass().get(i) == -1){
+                plot.setPlotColor(Color.RED);
+            }
             plot.addParametricCurve(f);
         }
     }
     
     private void clearPlot(){
-        // TODO need method to remove all points and curves from plot
+        plot.removeAll();
     }
 
     
@@ -63,15 +84,14 @@ public class PlotController {
         stopped = false;
         new AnimationTimer() {
 
-            long nextTime = -1;
+            long lastUpdateTime = -1;
             
             @Override
             public void handle(long now) {
-                if (!stopped && now > nextTime){
+                if (!model.hasNext()) {stopped = true;}
+                if (!stopped && now > (lastUpdateTime + frameDelay * 1000000)){
                     incrementAnimation();
-                    if (nextTime == -1) {nextTime = now;}
-                    nextTime = now + frameDelay*1000000; // convert delays from milliseconds to nanoseconds
-                    System.out.println("nextTime: "+nextTime);
+                    lastUpdateTime = now;
                 }
                 if (stopped) {
                     stop();
@@ -85,42 +105,47 @@ public class PlotController {
         stopped = true;
     }
     
+    public void back() {
+        pause();
+        if (model.hasPrevious()){
+            currentData = model.previous();
+            setPlot();
+        }
+    }
+    
+    public void next() {
+        pause();
+        if (model.hasNext()){
+            currentData = model.next();
+            setPlot();
+        }
+    }
+    
     private void incrementAnimation(){
-        //System.out.println("incrementing animation");
-        currentData = model.next();
         clearPlot();
+        currentData = model.next();
         setPlot();
     }
     
     public void speedUp() {
         if (frameDelay > 1) {
             frameDelay /= 2;
-            //System.out.println("new frameDelay: "+frameDelay);
         }
-        else {
-            //System.out.println("Already at minimum frame delay: "+frameDelay);
-        }
-        
     }
     
     public void speedDown() {
-        if (frameDelay <= 1024) {
+        if (frameDelay <= 8192) {
             frameDelay *= 2;
-            //System.out.println("new frameDelay: "+frameDelay);
         }
-        else {
-            //System.out.println("Already at maximum frame delay: "+frameDelay);
-        }
-        
     }
     
-    public void rewind(){
-        //System.out.println("rewinding");
+    public void reset(){
         pause();
         model.reset();
-        currentData = model.next();
-        this.plot = new Plot(0.1, 400, 300, -8.0, 8.0, -6.0, 6.0);
+        currentData = model.first();
+        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
         demoPanel.setGraph(plot);
+        setPlot();
     }
 
     

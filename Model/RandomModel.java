@@ -68,6 +68,11 @@ public class RandomModel implements Common.ModelInterface {
     }
 
     @Override
+    public ModelData first() {
+        return modelDataHistory.get(0);
+    }
+    
+    @Override
     public boolean hasPrevious() {
         return K > 0;
     }

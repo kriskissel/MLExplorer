@@ -1,6 +1,6 @@
 package View;
-import java.util.function.Function;
 
+import java.util.ArrayList;
 import Common.ParametricFunction;
 import Common.Tuple;
 import javafx.geometry.Insets;
@@ -21,11 +21,13 @@ public class Plot extends Pane implements PlotView {
     private Color plotColor = Color.BLUE;
     private Color backgroundColor = Color.BEIGE;
     private double tInc;
+    private ArrayList<Path> curves;
     
     public Plot(double tInc, int width, int height, double xLow, double xHigh,
             double yLow, double yHigh){
         this.axes = new Axes(width, height, xLow, xHigh, 2*(xHigh-xLow), yLow, yHigh, 2*(yHigh-yLow));
         this.tInc = tInc;
+        this.curves = new ArrayList<Path>();
 
         setMinSize(Pane.USE_PREF_SIZE, Pane.USE_PREF_SIZE);
         setPrefSize(axes.getPrefWidth(), axes.getPrefHeight());
@@ -33,7 +35,6 @@ public class Plot extends Pane implements PlotView {
 
         axes.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY)));
         getChildren().setAll(axes);
-        
     }
 
     @Override
@@ -58,6 +59,7 @@ public class Plot extends Pane implements PlotView {
         }
 
         this.getChildren().add(path);
+        this.curves.add(path);
     }
 
     @Override
@@ -96,5 +98,10 @@ public class Plot extends Pane implements PlotView {
         if (this.getChildren().size() > 0){
             this.getChildren().remove(this.getChildren().size() - 1);
         }
+    }
+    
+    public void removeAll(){
+        this.getChildren().removeAll(this.getChildren());
+        this.getChildren().add(axes);
     }
 }

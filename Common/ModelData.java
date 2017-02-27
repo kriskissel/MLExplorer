@@ -3,15 +3,49 @@ package Common;
 import java.util.ArrayList;
 
 public class ModelData {
+    
+    /**
+     * Note that this data structure is mutable.  In particular, the functions in curveList
+     * are mutable, and might be affected by changes elsewhere.
+     * I should probably try to make Tuple and ParametricFunction immutable.
+     */
 
     private ArrayList<Tuple> points = new ArrayList<Tuple>();
     private ArrayList<Integer> pointClass = new ArrayList<Integer>();
     private ArrayList<ParametricFunction> curves = new ArrayList<ParametricFunction>();
     private ArrayList<Integer> curveClass = new ArrayList<Integer>();
     
+    public void clearCurves() {
+        this.curves = new ArrayList<ParametricFunction>();
+        this.curveClass = new ArrayList<Integer>();
+    }
+    
+    public ModelData copyAll(){
+        ModelData cloneData = new ModelData();
+        for (Tuple point : this.points) { cloneData.points.add(point);}
+        for (Integer pc : this.pointClass) { cloneData.pointClass.add(pc);}
+        for (ParametricFunction f : this.curves) {cloneData.curves.add(f);}
+        for (Integer cc : this.curveClass) {cloneData.curveClass.add(cc);}
+        return cloneData;
+    }
+    
+    public ModelData copyPointsOnly(){
+        ModelData cloneData = new ModelData();
+        for (Tuple point : this.points) { cloneData.points.add(point);}
+        for (Integer pc : this.pointClass) { cloneData.pointClass.add(pc);}
+        return cloneData;
+    }
     
     public ArrayList<Tuple> getPoints() {
         return points;
+    }
+    
+    public void setPoints(ArrayList<Tuple> points){
+        this.points = points;
+    }
+    
+    public void setPointClasses(ArrayList<Integer> pointClasses){
+        this.pointClass = pointClasses;
     }
 
     public ArrayList<Integer> getPointClass() {

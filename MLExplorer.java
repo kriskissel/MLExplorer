@@ -1,18 +1,15 @@
-import Common.ParametricFunction;
+import java.util.List;
+
+import Common.ModelInterface;
+import Controller.Demo;
 import Controller.PlotController;
-import Model.RandomModel;
+import Model.PerceptronDemo;
 import View.DemoButtons;
 import View.DemoPanel;
-import View.Plot;
 import View.StringListener;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MLExplorer extends Application {
@@ -23,6 +20,12 @@ public class MLExplorer extends Application {
      */
     
     PlotController plotController;
+    int SCENE_WIDTH = 900;
+    int SCENE_HEIGHT = 600;
+    DemoPanel demoPanel;
+    List<String> descriptions;
+    List<String> initialDataSets;
+    Demo demo;
     
     public static void main(String[] args){
         launch(args);
@@ -48,45 +51,71 @@ public class MLExplorer extends Application {
         });
         
         // Attach demo panel on the right side of window
-        DemoPanel demoPanel = new DemoPanel("Title", "DESCRIPTION GOES HERE");
+        demoPanel = new DemoPanel("Title", "DESCRIPTION GOES HERE");
         mainLayout.getChildren().add(demoPanel);
         
         // define demoPanel listener
         demoPanel.setStringListener(new StringListener() {
             @Override
             public void textEmitted(String text) {
-                System.out.println("demoPanel listener received message: "+text);
                 relayMessageToPlotController(text);
             }
         });
         
         // TEMP for Testing:
-        plotController = new PlotController(demoPanel, new RandomModel());
+        // rewrite with subroutine for selecting demo via button panel
+        demo = new PerceptronDemo();
+        String demoTitle = demo.getTitle();
+        descriptions = demo.getDescriptions();
+        initialDataSets = demo.getInitialDataSets();
+        demoPanel.setTitle(demoTitle);
+        demoPanel.setDescription(descriptions.get(0));
+        demoPanel.setNumberOfDemos(descriptions.size());
+        ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
+        plotController = new PlotController(demoPanel, demoModel);
         
-        Scene scene = new Scene(mainLayout, 600, 500);
+        Scene scene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
         window.setScene(scene);
         window.show();
-        
-        demoPanel.setTitle("Changed Title");
+
         
     }
     
     private void relayMessageToPlotController(String message){
-        // FOR TESTING
-        if (message == "play"){
+        // really should refactor this with enumerations and a switch statement
+        if (plotController == null) {return;}
+        if (message.equals("play")){
             plotController.play();
         }
-        if (message == "pause"){
+        if (message.equals("pause")){
             plotController.pause();
         }
-        if (message == "speedup"){
+        if (message.equals("back")){
+            plotController.back();
+        }
+        if (message.equals("speedup")){
             plotController.speedUp();
         }
-        if (message == "speeddown"){
+        if (message.equals("speeddown")){
             plotController.speedDown();
         }
-        if (message == "rewind") {
-            plotController.rewind();
+        if (message.equals("next")){
+            plotController.next();
+        }
+        if (message.equals("reset")) {
+            plotController.reset();
+        }
+        if (message.equals("Demo 1")){
+            plotController.pause();
+            demoPanel.setDescription(descriptions.get(0));
+            ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
+            plotController = new PlotController(demoPanel, demoModel);
+        }
+        if (message.equals("Demo 2")){
+            plotController.pause();
+            demoPanel.setDescription(descriptions.get(1));
+            ModelInterface demoModel = demo.getModel(initialDataSets.get(1));
+            plotController = new PlotController(demoPanel, demoModel);
         }
     }
 

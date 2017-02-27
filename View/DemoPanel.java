@@ -1,12 +1,8 @@
 package View;
 
-import javafx.application.Application;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -14,26 +10,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 public class DemoPanel extends BorderPane {
     
-    public String title = "Title";
-    public String description = "Description";
     Label titleLabel;
     Label descriptionLabel;
     private StringListener textListener;
+    ChoiceBox<String> choiceBox;
     
-    // NOT SURE HOW TO DO THIS
-    //FXCollections.observableArrayList presetDemoList;
+
     
     public DemoPanel(String title, String description){
         super();
-        this.title = title;
-        this.description = description;
-        //presetDemoList = FXCollections.observableArrayList("Demo 1", "Demo 2", "Demo 3");
-        
-        
         this.setPadding(new Insets(10, 10, 10, 10));
         
         // Create title and description for top of pane
@@ -47,25 +35,28 @@ public class DemoPanel extends BorderPane {
         // Later, embed this in another VBox and add drop menu for preset demos and custom demo button
         // Will also need to add listeners to these buttons which activate message emitters
         HBox controls = new HBox(10);
-        Button rewind = new Button("Rewind");
-        rewind.setOnAction(e -> emitMessageText("rewind"));
+        Button rewind = new Button("Reset");
+        rewind.setOnAction(e -> emitMessageText("reset"));
         Button pause = new Button("Pause");
         pause.setOnAction(e -> emitMessageText("pause"));
+        Button back = new Button("Back");
+        back.setOnAction(e -> emitMessageText("back"));
         Button speedDown = new Button("Speed-");
         speedDown.setOnAction(e -> emitMessageText("speeddown"));
         Button play = new Button("Play");
         play.setOnAction(e -> emitMessageText("play"));
         Button speedUp = new Button("Speed+");
         speedUp.setOnAction(e -> emitMessageText("speedup"));
-        controls.getChildren().addAll(rewind, pause, speedDown, play, speedUp);
+        Button next = new Button("Next");
+        next.setOnAction(e -> emitMessageText("next"));
+        controls.getChildren().addAll(rewind, pause, back, speedDown, play, speedUp, next);
         
         // Create demo selection panel
         HBox demoSelections = new HBox(10);
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        choiceBox.setItems(FXCollections.observableArrayList("Demo 1", "Demo 2", "Demo 3"));
-        choiceBox.setValue("Demo 1");
-        Button customDemoButton = new Button("Customize Demo Settings");
-        demoSelections.getChildren().addAll(choiceBox, customDemoButton);
+        choiceBox = new ChoiceBox<>();
+        
+        demoSelections.getChildren().add(choiceBox);
+        choiceBox.setOnAction(e -> emitMessageText(choiceBox.getValue()));
         
         // Combine controls and demo selection panel into a single node
         VBox controlPanel = new VBox(10);
@@ -76,6 +67,18 @@ public class DemoPanel extends BorderPane {
         this.setBottom(controlPanel);
     }
     
+    public void setNumberOfDemos(int N){
+        ArrayList<String> demoNames = new ArrayList<String>();
+        for (int i = 0; i < N; i++){
+            int K = i+1;
+            String demoName = "Demo " + K;
+            demoNames.add(demoName);
+        }
+        choiceBox.setItems(FXCollections.observableArrayList(demoNames));
+        choiceBox.setOnAction(e -> emitMessageText(choiceBox.getValue()));
+        choiceBox.setValue("Demo 1");
+    }
+    
     private void emitMessageText(String text){
         if (this.textListener != null) {
             this.textListener.textEmitted(text);
@@ -84,17 +87,13 @@ public class DemoPanel extends BorderPane {
     
     public void setGraph(Plot plot){
         this.setCenter(plot);
-        //System.out.println(this.getChildren());
     }
 
-
     public void setTitle(String title){
-        this.title = title;
         this.titleLabel.setText(title);
     }
     
     public void setDescription(String description){
-        this.description = description;
         this.descriptionLabel.setText(description);
     }
     
