@@ -98,6 +98,12 @@ public class Matrix {
     public Matrix rowEchelonForm() {
         // we've cached the row echelon form if we've computed it before
         if (this.R != null) {return this.R;}
+        /*
+        if (this.m != this.n) {
+            throw new RuntimeException("Cannot perfrom LU decomposition " + 
+                    "on non-square matrix.");
+        }
+        */
         this.permutations = new ArrayList<IntegerTuple>(); // initialize record of permutations
         double d = 1; // used to track the determinant
         this.rank = 0;
@@ -171,6 +177,12 @@ public class Matrix {
         return this.L;
     }
     
+    public Matrix getR(){
+        if (this.R != null) { return R;}
+        return rowEchelonForm();
+    }
+    
+    
     public boolean closeTo(Matrix o, double tolerance){
         if (o.m != this.m || o.n != this.n) {return false;}
         for (int row = 0; row < this.m; row++){
@@ -242,25 +254,84 @@ public class Matrix {
         return new Matrix(newArray, this.m, matrix.n);
     }
     
-    // for solving Ax=b, finds a particular solution when a solution exists
-    // will use PA=LU decomposition
-    // that means we'll also need to keep track of the permutations found
-    // in that factorization
+
     public Matrix solve(Matrix b){
-        // start by applying any necessary permutations to b
-        Matrix rightSide = b.copy();
-        for (IntegerTuple p : permutations) {
-            rightSide.swapRows(p.getX(), p.getY());
-        }
-        // next we use the LU decomposition
-        // first we solve Ux = b using forward substitution;
+        if (this.m == this.n) {return this.solveForSquareSystems(b);}
         
-        // need to keep track of pivot columns during lu factorization
-        // so that I can skip over them during the forward propagation process
+        // if there is no solution, then I'd like to return the least-squares approximate
+        // solution, so i'll need to wrap the above in a try-catch
+        // can also add a separate method for solveTrueOnly
+        
+        // also still need to implement approach for non-square systems.
+        // can probably use least-squares if more rows than columns
+        // but will need to find something else (least-norm solution?) if more
+        // columns than rows.
         
         return null;
     }
     
+    private Matrix solveForSquareSystems(Matrix b){
+     // start by applying any necessary permutations to b
+        Matrix rightSide = b.copy();
+        if (R == null) {rowEchelonForm();}
+        for (IntegerTuple p : permutations) {
+            rightSide.swapRows(p.getX(), p.getY());
+        }
+        // next we use the LU decomposition
+        // first we solve Ly = b using forward substitution;
+        double[] y = forwardSubstituion(rightSide.array);
+
+        // then use backsubstitution to solve Ux = y;
+        double[] x = backSubstitution(y);
+        return new Matrix(x, this.n, 1);
+    }
+    
+    private double[] forwardSubstituion(double[] b){
+        // performs the forward substitution step in solving Ly=b
+        // L is m-by-m, so y will be an m-dimensional vector
+        // recall that L has ones on the diagonal and is lower triangular
+        // hence each row corresponds to an equation of the form
+        // c_1*y_1+c_2*y_2+...+c_(n-1)*y_(n-1) + y_n = b_n
+        // express this ia partial_sum + y_n = b_n
+        double[] y = new double[this.m];
+        for (int i = 0; i < this.m; i++){
+            double partial_sum = 0; // accumulator
+            for (int j = 0; j < i; j++) { partial_sum += L.get(i, j) * y[j]; }
+            y[i] = b[i]- partial_sum;
+        }
+        return y;
+    }
+    
+    private double[] backSubstitution(double[] y){
+        // performs the backsubstitution step in solving Ux=y
+        // U is n-by-n, so y will be an n-dimensional vector
+        // recall that U is uppertriangular.
+        // we start at the bottom row of U and work our way up
+        // each row represents an equatyion of the form
+        // c_k*x_k + c_(k+1)*c_(k+1) + ... + c_n * x_n = y_n
+        // each row allows us to solve for one value x_k
+        // if there are any rows of the matrix where the coefficients are all 0 but
+        // the right side vector y is not zero in the same row this system has no solution
+        // in that case, we throw a RuntimeException
+        // If a system has multiple solution, we return the one the particular solution
+        // that corresponds to all free variables being zero
+        double[] x = new double[this.n];
+        for (int i = this.n-1; i >= 0; i--) {
+            int k = 0;
+            while (k < this.n && this.R.get(i, k) == 0) {k++;} // advance to the first non-zero entry
+            if (k == this.n) { 
+                if (y[i] != 0) { throw new RuntimeException("System has" +
+                        "no solution"); // this row represents the equation 0 = non-zero
+                }
+            else {continue;} // this row represents the equation 0 = 0
+            }
+            
+            double partial_sum = 0; // accumulator
+            for (int j = k+1; j < this.n; j++) { partial_sum += this.R.get(i, j) * x[j];}
+            x[k] = (y[i] - partial_sum) / this.R.get(i, k);
+        }
+        return x;
+    }
     
     
     public static Matrix identity(int n){

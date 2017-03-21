@@ -46,7 +46,6 @@ public class PerceptronModel implements Common.ModelInterface {
         parseInitialData(initialDataSet);
         reset();
         startingData = modelHistory.get(0).copyPointsOnly(); // keep a copy for iterating
-        //System.out.println("initialized Perceptron Model");
     }
     
     private void parseInitialData(String dataSet){
