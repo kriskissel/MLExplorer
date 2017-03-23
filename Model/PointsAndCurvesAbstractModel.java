@@ -37,12 +37,13 @@ public abstract class PointsAndCurvesAbstractModel implements Common.ModelInterf
     public PointsAndCurvesAbstractModel(String initialDataSet){
         parseInitialData(initialDataSet);
         reset();
-        startingData = modelHistory.get(0).copyPointsOnly(); // keep a copy for iterating
+        // keep a copy for iterating
+        startingData = modelHistory.get(0).copyPointsOnly(); 
     }
     
     
     
-    private void parseInitialData(String dataSet){
+    void parseInitialData(String dataSet){
         this.points = new ArrayList<Tuple>();
         this.pointClasses = new ArrayList<Integer>();
         ArrayList<Double> w = new ArrayList<Double>();

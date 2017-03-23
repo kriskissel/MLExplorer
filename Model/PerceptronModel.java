@@ -8,7 +8,7 @@ import Common.ModelData;
 import Common.ParametricFunction;
 import Common.Tuple;
 
-public class PerceptronModel implements Common.ModelInterface {
+public class PerceptronModel extends PointsAndCurvesAbstractModel {
     
     private List<ModelData> modelHistory = new ArrayList<ModelData>();
     private int K; // points to current model in modelHistory, 0-indexed
@@ -42,70 +42,27 @@ public class PerceptronModel implements Common.ModelInterface {
         }
     }
     
+    
     public PerceptronModel(String initialDataSet) {
+        super(initialDataSet);
         parseInitialData(initialDataSet);
         reset();
         startingData = modelHistory.get(0).copyPointsOnly(); // keep a copy for iterating
     }
     
-    private void parseInitialData(String dataSet){
-        this.points = new ArrayList<Tuple>();
-        this.pointClasses = new ArrayList<Integer>();
-        String[] lines = dataSet.split("\n");
-        String mode = "not set";
-        for (String line : lines) {
-            if (line.equals("points")) {mode = "points";}
-            else if (line.equals("decision vector")) {mode = "decision vector";}
-            else {
-                String[] entries = line.split(",");
-                if (mode.equals("points")) {
-                    Double x = Double.parseDouble(entries[0]);
-                    Double y = Double.parseDouble(entries[1]);
-                    int c = Integer.parseInt(entries[2]);
-                    points.add(new Tuple(x,y));
-                    pointClasses.add(c);
-                    //System.out.println("Adding point: "+x+","+y+" with class "+c);
-                }
-                else if (mode.equals("decision vector")) {
-                    Double w_0 = Double.parseDouble(entries[0]);
-                    Double w_1 = Double.parseDouble(entries[1]);
-                    Double w_2 = Double.parseDouble(entries[2]);
-                    this.INITIAL_W = new Double[] {w_0, w_1, w_2};
-                    //System.out.println("Setting decision vector");
-                    //System.out.println(this.INITIAL_W);
-                }
-            }
-        }
-    }
-    
     @Override
     public boolean hasNext() {
-        boolean notAtEndOfHistory = this.K < this.modelHistory.size() - 1;
-        boolean newIterationsAvailable = !allPointsClassifiedCorrectly;
-        boolean notCompletedFinalIteration = allPointsClassifiedCorrectly && animationStage == 2;
-        return notAtEndOfHistory || newIterationsAvailable || notCompletedFinalIteration;
-    }
-    
-    @Override
-    public ModelData first() {
-        this.K = 0;
-        return modelHistory.get(K);
+        if (this.K < this.modelHistory.size() || 
+                this.animationStage != 2 ||
+                !this.allPointsClassifiedCorrectly) { return true; }
+        else {
+            return false;
+        }
     }
 
-    @Override
-    public ModelData next() {
-        if (!hasNext()) {
-            throw new RuntimeException("Model has no next value.");
-        }
-        this.K++;
-        if (this.K == modelHistory.size()){
-            iterateModel();
-        }
-        ModelData nextData = modelHistory.get(this.K);
-        return nextData;
-    }
     
-    private void iterateModel(){
+    @Override
+    void iterateModel(){
         // should only be run when current model is the last one in the array list
         // that means K is equal to the length of the modelHistory list.
         if (this.K != modelHistory.size()){
@@ -210,20 +167,6 @@ public class PerceptronModel implements Common.ModelInterface {
         modelHistory.add(startingModel);
         this.K = 0;
         checkRep();
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return this.K > 0;
-    }
-
-    @Override
-    public ModelData previous() {
-        if (!hasPrevious()) {
-            throw new RuntimeException("Can't execute previous(): History has no previous model.");
-        }
-        K--;
-        return modelHistory.get(K);
     }
     
     
