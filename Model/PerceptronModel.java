@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -10,15 +11,15 @@ import Common.Tuple;
 
 public class PerceptronModel extends PointsAndCurvesAbstractModel {
     
-    private List<ModelData> modelHistory = new ArrayList<ModelData>();
-    private int K; // points to current model in modelHistory, 0-indexed
+    //private List<ModelData> modelHistory = new ArrayList<ModelData>();
+    //private int K; // points to current model in modelHistory, 0-indexed
     private Random random = new Random(); // used for updating perceptron
     private boolean allPointsClassifiedCorrectly = false;
-    private ArrayList<Common.Tuple> points; // shared set of points for all iterations of model
-    private ArrayList<Integer> pointClasses; // shared set of point classes for all iterations of model
+    //private ArrayList<Common.Tuple> points; // shared set of points for all iterations of model
+    //private ArrayList<Integer> pointClasses; // shared set of point classes for all iterations of model
     private Double[] W; // the normal vector for the last generated iteration of perceptron decision boundary, should have 3 entries
-    private Double[] INITIAL_W; // starting decision boundary: y = 0.5
-    private ModelData startingData;
+    //private Double[] INITIAL_W; // starting decision boundary: y = 0.5
+    //private ModelData startingData;
     // animationStage will tell use what type of change to make in the next new model iteration
     // stage 0 means we need to identify a misclassified point and change its color
     // stage 1 means that we need to update the perceptron decision boundary
@@ -45,7 +46,10 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
     
     public PerceptronModel(String initialDataSet) {
         super(initialDataSet);
-        parseInitialData(initialDataSet);
+        System.out.println("initiialized perceptron model super");
+        System.out.println("INITIAL_W");
+        System.out.println(this.INITIAL_W);
+        //parseInitialData(initialDataSet);
         reset();
         startingData = modelHistory.get(0).copyPointsOnly(); // keep a copy for iterating
     }
@@ -151,22 +155,56 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
 
     @Override
     public void reset() {
-
+        
         this.modelHistory = new ArrayList<ModelData>();
         this.allPointsClassifiedCorrectly = false;
-        this.W = INITIAL_W.clone(); 
+        
+        this.W = Arrays.copyOf(this.INITIAL_W, this.INITIAL_W.length);
+        
+        System.out.println(this.W);
+        
+        System.out.println(this.W.length);
+        System.out.println(this.INITIAL_W.length);
+        
+        for (Double d : W) { System.out.print(d + " "); System.out.print("\n");};
+        
         ModelData startingModel = new ModelData();
         startingModel.setPoints(this.points);
         startingModel.setPointClasses(this.pointClasses);
         ParametricFunction startingDecisionBoundary = new ParametricFunction(t -> t, t -> 0.5, -10.0, 10.0);
         startingModel.getCurves().add(startingDecisionBoundary);
         startingModel.getCurveClass().add(2);
+        
+        System.out.println("here3");
+        
+        System.out.println(W);
+        
+        System.out.println(W[1]);
+        System.out.println(W[2]);
+        
         ParametricFunction positiveVector = ParametricFunction.unitVector(new Tuple(W[1], W[2]));
+        
+        System.out.println("here4");
+        
         startingModel.getCurves().add(positiveVector);
+        
+        System.out.println("here5");
+        
         startingModel.getCurveClass().add(1);
+        
+        System.out.println("here6");
+        
         modelHistory.add(startingModel);
+        
+        System.out.println("here7");
+        
         this.K = 0;
+        
+        System.out.println("here8");
+        
         checkRep();
+        
+        
     }
     
     

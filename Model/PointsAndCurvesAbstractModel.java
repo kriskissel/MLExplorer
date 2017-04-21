@@ -11,12 +11,12 @@ import Common.Tuple;
 
 public abstract class PointsAndCurvesAbstractModel implements Common.ModelInterface {
 
-    private List<ModelData> modelHistory = new ArrayList<ModelData>();
-    private int K; // index points to current model in modelHistory, 0-indexed
-    private ArrayList<Common.Tuple> points; // shared set of points for all iterations of model
-    private ArrayList<Integer> pointClasses; // shared set of point classes for all iterations of model
-    private ModelData startingData;
-    private double[] INITIAL_W; // coefficients for initial curve
+    List<ModelData> modelHistory = new ArrayList<ModelData>();
+    int K; // index points to current model in modelHistory, 0-indexed
+    ArrayList<Common.Tuple> points; // shared set of points for all iterations of model
+    ArrayList<Integer> pointClasses; // shared set of point classes for all iterations of model
+    ModelData startingData;
+    Double[] INITIAL_W; // coefficients for initial curve
     // animationStage will tell use what type of change to make in the next new model iteration
     // stage 0 means we need to identify a misclassified point and change its color
     // stage 1 means that we need to update the perceptron decision boundary
@@ -35,10 +35,15 @@ public abstract class PointsAndCurvesAbstractModel implements Common.ModelInterf
     
 
     public PointsAndCurvesAbstractModel(String initialDataSet){
+        System.out.println("parsing initial data");
         parseInitialData(initialDataSet);
-        reset();
+        //System.out.println("calling reset");
+        // reset();
         // keep a copy for iterating
-        startingData = modelHistory.get(0).copyPointsOnly(); 
+        //startingData = modelHistory.get(0).copyPointsOnly(); 
+        System.out.println("completed super constructor");
+        System.out.println("this.INITIAL_W");
+        System.out.println(this.INITIAL_W);
     }
     
     
@@ -62,15 +67,18 @@ public abstract class PointsAndCurvesAbstractModel implements Common.ModelInterf
                     pointClasses.add(c);
                 }
                 else if (mode.equals("decision vector")) {
-                    w.add(Double.parseDouble(entries[0]));
-                    
+                    for (int i = 0; i < entries.length; i++) {
+                        w.add(Double.parseDouble(entries[i]));
+                    }
                 }
             }
         }
-        this.INITIAL_W = new double[w.size()];
+        System.out.println("w size: " + w.size());
+        this.INITIAL_W = new Double[w.size()];
         for (int i = 0; i < w.size(); i++) {
             this.INITIAL_W[i] = w.get(i);
         }
+        System.out.println(this.INITIAL_W);
     }
     
  
