@@ -11,15 +11,26 @@ import Common.Tuple;
 
 public class PerceptronModel extends PointsAndCurvesAbstractModel {
     
+    private static enum AnimationStage {
+        START_NEW_CYCLE, UPDATE_DECISION_BOUNDARY, RETURN_TO_ORIGINAL_COLORS;
+        
+        private AnimationStage nextStage;
+        
+        static {
+            START_NEW_CYCLE.nextStage = UPDATE_DECISION_BOUNDARY;
+            UPDATE_DECISION_BOUNDARY.nextStage = RETURN_TO_ORIGINAL_COLORS;
+            RETURN_TO_ORIGINAL_COLORS.nextStage = START_NEW_CYCLE;
+        }
+        
+        private AnimationStage getNextStage() {
+            return nextStage;
+        }
+    }
+    
     private Random random = new Random(); // used for updating perceptron
     private boolean allPointsClassifiedCorrectly = false;
     private Double[] W; // the normal vector for the last generated iteration of perceptron decision boundary, should have 3 entries
-    // animationStage will tell use what type of change to make in the next new model iteration
-    // stage 0 means we need to identify a misclassified point and change its color
-    // stage 1 means that we need to update the perceptron decision boundary
-    // stage 2 means we need to return the point to its original color
-    // we start out in stage 0
-    private int animationStage = 0;
+    private AnimationStage animationStage = AnimationStage.START_NEW_CYCLE;
     private int misclassifiedIndex;
     
     @Override
@@ -48,7 +59,7 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
     @Override
     public boolean hasNext() {
         if (this.K < (this.modelHistory.size() - 1) || 
-                this.animationStage != 0 ||
+                this.animationStage != AnimationStage.START_NEW_CYCLE ||
                 !this.allPointsClassifiedCorrectly) {
             return true; }
         else {
@@ -67,17 +78,19 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
         
         ModelData newModel = startingData.copyPointsOnly();
         
+        System.out.println(animationStage);
+        
         // stage 0: pick a misclassified point
-        if (animationStage == 0){
+        if (animationStage == AnimationStage.START_NEW_CYCLE){
             List<Integer> misclassifiedPoints = getMisclassifiedPointIndices();
             int randomIndex = misclassifiedPoints.get(random.nextInt(misclassifiedPoints.size()));
             misclassifiedIndex = randomIndex;
             
             // add the current decision boundary
-            newModel.getCurves().add(ParametricFunction.linearDecisionBoundary(W));
-            newModel.getCurveClass().add(0);
+            //newModel.getCurves().add(ParametricFunction.linearDecisionBoundary(W));
+            //newModel.getCurveClass().add(0);
         }
-        if (animationStage == 1) {
+        if (animationStage == AnimationStage.START_NEW_CYCLE) {
             // change point class just like in the previous iteration
             newModel.getPointClass().set(misclassifiedIndex, 2);
             
@@ -92,7 +105,8 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
                 this.allPointsClassifiedCorrectly = true;
             }
         }
-        if (animationStage == 0 || animationStage == 1) {
+        if (animationStage == AnimationStage.START_NEW_CYCLE || 
+                animationStage == AnimationStage.UPDATE_DECISION_BOUNDARY) {
             // change the class of the point being used to
             // update perceptron decision vector, this way the view can display it in a different color
             newModel.getPointClass().set(misclassifiedIndex, 2);
@@ -113,7 +127,7 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
         
         // add newModel to modelHistory
         this.modelHistory.add(newModel);
-        animationStage = (animationStage + 1) % 3; // advance to the next animationStage
+        animationStage = animationStage.getNextStage(); // advance to the next animationStage
         checkRep();
     }
     
