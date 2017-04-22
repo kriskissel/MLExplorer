@@ -27,6 +27,8 @@ public class PlotController {
     long frameDelay = 512; // delay between frames for animation
     int PLOT_WIDTH = 600;
     int PLOT_HEIGHT = 450;
+    int CIRCLE_RADIUS = 10;
+    int LINE_THICKNESS = 4;
     
     
     // the constructor should also take a model class instance as a parameter and attach it
@@ -56,7 +58,7 @@ public class PlotController {
                 plot.setPlotColor(Color.RED);
             }
             
-            plot.addCircle(point.getX(), point.getY(), 5);
+            plot.addCircle(point.getX(), point.getY(), this.CIRCLE_RADIUS);
         }
         
         for (int i = 0; i < currentData.getCurves().size(); i++){
@@ -70,7 +72,7 @@ public class PlotController {
             else  if (currentData.getCurveClass().get(i) == -1){
                 plot.setPlotColor(Color.RED);
             }
-            plot.addParametricCurve(f);
+            plot.addParametricCurve(f, this.LINE_THICKNESS);
         }
     }
     

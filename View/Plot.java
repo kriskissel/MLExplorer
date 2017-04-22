@@ -38,12 +38,12 @@ public class Plot extends Pane implements PlotView {
     }
 
     @Override
-    public void addParametricCurve(ParametricFunction f){
+    public void addParametricCurve(ParametricFunction f, int lineThickness){
         double tMin = f.getTMin();
         double tMax = f.getTMax();
         Path path = new Path();
         path.setStroke(plotColor);
-        path.setStrokeWidth(2);
+        path.setStrokeWidth(lineThickness);
         path.setClip(new Rectangle(0, 0, axes.getPrefWidth(), axes.getPrefHeight()));
 
         double t = tMin;

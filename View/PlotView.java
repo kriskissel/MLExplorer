@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 
 public interface PlotView {
 
-    public void addParametricCurve(ParametricFunction vectorFunction);
+    public void addParametricCurve(ParametricFunction vectorFunction, int lineThickness);
     
     public void removeLast();
     
