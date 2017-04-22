@@ -78,8 +78,6 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
         
         ModelData newModel = startingData.copyPointsOnly();
         
-        System.out.println(animationStage);
-        
         // stage 0: pick a misclassified point
         if (animationStage == AnimationStage.START_NEW_CYCLE){
             List<Integer> misclassifiedPoints = getMisclassifiedPointIndices();
