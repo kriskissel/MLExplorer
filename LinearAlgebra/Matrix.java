@@ -40,6 +40,15 @@ public class Matrix {
         }
     }
     
+    public Matrix(Double[] array, int rows, int columns) {
+        this.m = rows;
+        this.n = columns;
+        this.array = new double[rows * columns];
+        for (int k = 0; k < rows * columns; k++){
+            this.array[k] = array[k];
+        }
+    }
+    
     // constructor for an m x n matrix of all zeros
     public Matrix zeros(int m, int n){
         return new Matrix(new double[m*n], m, n);
@@ -68,6 +77,12 @@ public class Matrix {
             sb.append("\n");
         }
         return sb.toString();
+    }
+    
+    public double[] toDoubleArray() {
+        // avoid rep exposure by returning a copy of this.array
+        double[] array = Arrays.copyOf(this.array, this.array.length);
+        return array;
     }
     
     public double get(int row, int col) { return array[row * n + col];}
@@ -244,11 +259,14 @@ public class Matrix {
         double[] newArray = new double[this.m * matrix.n];
         for (int i = 0; i < m; i++) {
             for (int j=0; j < matrix.n; j++) {
-                double sum = 0.0;
+                double partialSum = 0.0;
                 for (int k = 0; k < this.n; k++) {
-                    sum += this.array[this.n * i + k] * matrix.array[matrix.n * k + j];
+                    partialSum += this.get(i, k) * matrix.get(k, j);
+                    //sum += this.array[this.n * i + k] * matrix.array[matrix.n * k + j];
                 }
-                newArray[m * i+j] = sum;
+                System.out.println("trying to write " + partialSum + " to array " +
+                        "entry " + i + "," + j);
+                newArray[matrix.n * i + j] = partialSum;
             }
         }
         return new Matrix(newArray, this.m, matrix.n);
@@ -268,6 +286,10 @@ public class Matrix {
         // columns than rows.
         
         return null;
+    }
+    
+    public Matrix pinv() {
+        return this.transpose().times(this);
     }
     
     private Matrix solveForSquareSystems(Matrix b){

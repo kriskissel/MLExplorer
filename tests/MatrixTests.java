@@ -185,6 +185,18 @@ public class MatrixTests {
     }
     
     @Test
+    public void testTimesWithMatrix3() {
+        Matrix m1 = new Matrix(new double[] {1.0, 2.0, 2.0, 3.0}, 2, 2);
+        System.out.println(m1);
+        Matrix m2 = new Matrix(new double[] {3.0, 1.0}, 2, 1);
+        System.out.println(m2);
+        Matrix p = new Matrix(new double[] {5.0, 9.0}, 2, 1);
+        System.out.println(p);
+        System.out.println(m1.times(m2));
+        assertTrue(m1.times(m2).closeTo(p, 0.001));
+    }
+    
+    @Test
     public void testSolve1() {
         Matrix A = new Matrix(new double[] {2.0, 3.0, 3.0, 2.0}, 2, 2);
         Matrix b = new Matrix(new double[] {8.0, 7.0}, 2, 1);
@@ -198,10 +210,10 @@ public class MatrixTests {
                 3, 3);
         Matrix b = new Matrix(new double[] {2.0, 5.0, 2.0}, 3, 1);
         Matrix x = new Matrix(new double[] {1.0, 0.0, 1.0}, 3, 1);
-        System.out.println(A);
-        System.out.println(b);
-        System.out.println(x);
-        System.out.println(A.solve(b));
+        //System.out.println(A);
+        //System.out.println(b);
+        //System.out.println(x);
+        //System.out.println(A.solve(b));
         assertTrue(A.solve(b).closeTo(x, 0.00001));
     }
     

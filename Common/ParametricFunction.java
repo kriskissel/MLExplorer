@@ -34,6 +34,29 @@ public class ParametricFunction implements Function<Double, Tuple>{
         }
     }
     
+    
+    /**
+     * Creates a parametric function equivalent to the polynomial
+     * c0 + c1*x + c2*x^2 + ... + cn*x^n
+     * @param coeffs an array of coefficients [c0,c1,c2,...,cn] for the
+     *          polynomial c0 + c1*x + c2*x^2 + ... + cn*x^n
+     * @return a parametric function t -> (t, c0 + c1*t + c2*t^2 + ... + cn*t^n)
+     */
+    public static ParametricFunction polynomialFromCoefficients(double[] coeffs) {
+        ParametricFunction p = new ParametricFunction(t -> t, t -> {
+            double v = 1.0;
+            double y = 0.0;
+            for (Double c : coeffs) {
+                y += c * v;
+                v *= t;
+            }
+            return y;
+            }, -10.0, 10.0);
+        
+        return p;
+    }
+    
+    
     /**
      * 
      * @param W must be a vector of length 3, with either W[1] != 0 or W[2] != 0

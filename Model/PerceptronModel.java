@@ -78,17 +78,16 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
         
         ModelData newModel = startingData.copyPointsOnly();
         
-        // stage 0: pick a misclassified point
+        // first stage: pick a misclassified point
         if (animationStage == AnimationStage.START_NEW_CYCLE){
             List<Integer> misclassifiedPoints = getMisclassifiedPointIndices();
             int randomIndex = misclassifiedPoints.get(random.nextInt(misclassifiedPoints.size()));
             misclassifiedIndex = randomIndex;
             
-            // add the current decision boundary
-            //newModel.getCurves().add(ParametricFunction.linearDecisionBoundary(W));
-            //newModel.getCurveClass().add(0);
+
         }
-        if (animationStage == AnimationStage.START_NEW_CYCLE) {
+        // second stage: update decision boundary
+        if (animationStage == AnimationStage.UPDATE_DECISION_BOUNDARY) {
             // change point class just like in the previous iteration
             newModel.getPointClass().set(misclassifiedIndex, 2);
             
@@ -103,22 +102,21 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
                 this.allPointsClassifiedCorrectly = true;
             }
         }
+        // in stage 1 or stage 2, the misclassified point 
+        // should be colored differently
         if (animationStage == AnimationStage.START_NEW_CYCLE || 
                 animationStage == AnimationStage.UPDATE_DECISION_BOUNDARY) {
             // change the class of the point being used to
             // update perceptron decision vector, this way the view can display it in a different color
             newModel.getPointClass().set(misclassifiedIndex, 2);
         }
-        // if animationStage == 2, this last conditional statement won't execute, leaving all
-        // point classes as either 1 or -1, so that none are highlighted in the view
-
         
-        // add the decision boundary
+        // add the decision boundary to the graph
         ParametricFunction decisionBoundary = ParametricFunction.linearDecisionBoundary(W);
         newModel.getCurves().add(decisionBoundary);
         newModel.getCurveClass().add(2);
         
-        // add the decision vectors projection onto R^2
+        // add the decision vector's projection onto R^2 to the graph
         ParametricFunction positiveVector = ParametricFunction.unitVector(new Tuple(W[1], W[2]));
         newModel.getCurves().add(positiveVector);
         newModel.getCurveClass().add(1);

@@ -4,6 +4,7 @@ import Common.ModelInterface;
 import Controller.Demo;
 import Controller.PlotController;
 import Model.PerceptronDemo;
+import Model.PolynomialRegressionBiasVarianceDemo;
 import View.DemoButtons;
 import View.DemoPanel;
 import View.StringListener;
@@ -34,6 +35,7 @@ public class MLExplorer extends Application {
     @Override
     public void start(Stage window){
         
+        // set up main window
         window.setTitle("ML Explorer");
         HBox mainLayout = new HBox();
         mainLayout.setMinWidth(400);
@@ -47,6 +49,21 @@ public class MLExplorer extends Application {
             @Override
             public void textEmitted(String text) {
                 System.out.println("buttonPanel listener received message: "+text);
+                switch (text) {
+                case "Overfitting":
+                    demo = new PolynomialRegressionBiasVarianceDemo();
+                    descriptions = demo.getDescriptions();
+                    initialDataSets = demo.getInitialDataSets();
+                    demoPanel.setTitle(demo.getTitle());
+                    demoPanel.setDescription(descriptions.get(0));
+                    demoPanel.setNumberOfDemos(descriptions.size());
+                    ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
+                    plotController = new PlotController(demoPanel, demoModel);
+                    break;
+                default:
+                    System.out.println("No case in buttonPanel listener for " + text);
+                    break;
+                }
             }
         });
         
@@ -64,7 +81,7 @@ public class MLExplorer extends Application {
         
         // TEMP for Testing:
         // rewrite with subroutine for selecting demo via button panel
-        demo = new PerceptronDemo();
+        demo = new PerceptronDemo(); // this is the default option on startup
         String demoTitle = demo.getTitle();
         descriptions = demo.getDescriptions();
         initialDataSets = demo.getInitialDataSets();
