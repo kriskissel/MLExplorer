@@ -68,17 +68,22 @@ public abstract class PointsAndCurvesAbstractModel implements Common.ModelInterf
         return modelHistory.get(K);
     }
 
+    /**
+     * Clients should always check hasNext() first before using next().
+     * next() throws a RuntimeException if hasNext(0 is false.
+     */
     @Override
     public ModelData next() {
-        if (!hasNext()) {
-            throw new RuntimeException("Model has no next value.");
+        if (hasNext()) {
+            this.K++;
+            if (this.K == modelHistory.size()){
+                iterateModel();
+            }
+            ModelData nextData = modelHistory.get(this.K);
+            return nextData;
+        } else {
+            throw new RuntimeException("model has no next state.");
         }
-        this.K++;
-        if (this.K == modelHistory.size()){
-            iterateModel();
-        }
-        ModelData nextData = modelHistory.get(this.K);
-        return nextData;
     }
     
     abstract void iterateModel();

@@ -47,9 +47,10 @@ public class PerceptronModel extends PointsAndCurvesAbstractModel {
     
     @Override
     public boolean hasNext() {
-        if (this.K < this.modelHistory.size() || 
-                this.animationStage != 2 ||
-                !this.allPointsClassifiedCorrectly) { return true; }
+        if (this.K < (this.modelHistory.size() - 1) || 
+                this.animationStage != 0 ||
+                !this.allPointsClassifiedCorrectly) {
+            return true; }
         else {
             return false;
         }
