@@ -15,7 +15,7 @@ public class DemoButtons extends VBox {
         this.setPadding(new Insets(10,10,10,10));
         
         Button button1 = new Button("Perceptron");
-        Button button2 = new Button("Overfitting");
+        Button button2 = new Button("Linear Regression: Variance");
         
         button1.setOnAction(e -> {
             if (this.textListener != null) {
@@ -25,7 +25,7 @@ public class DemoButtons extends VBox {
         
         button2.setOnAction(e -> {
             if (this.textListener != null) {
-                this.textListener.textEmitted("Overfitting");
+                this.textListener.textEmitted("Linear Regression: Variance");
             }
         });
         

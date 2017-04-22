@@ -26,36 +26,17 @@ public class Regression {
         }
         
         Matrix X = new Matrix(coefficientMatrix, xCoordinates.size(), degree + 1);
-        
-        System.out.println("X=");
-        System.out.println(X);
+
         
         // we create a matrix containing the corresponding y-values
         Matrix Y = new Matrix(yCoordinates.toArray(new Double[yCoordinates.size()]), 
                 yCoordinates.size(), 1);
         
-        System.out.println("Y=");
-        System.out.println(Y);
-        
+
         // now find the solution c of X^T X c = Y, and that will give us
         // our coefficients
         
-        //Matrix C = X.pinv().solve(X.transpose().times(Y));
-        
-        System.out.println("X^T X =");
-        System.out.println(X.pinv());
-        
-        System.out.println("X^T Y=");
-        System.out.println(X.transpose().times(Y));
-        
-        
-        // FOR TESTING:
-        Random r = new Random();
-        
-        Matrix C = new Matrix(new double[] {3 * r.nextDouble(), -1.0, 1.0}, 3, 1);
-        
-        System.out.println("C=");
-        System.out.println(C);
+        Matrix C = X.pinv().solve(X.transpose().times(Y));
         
         double[] coeffs = C.toDoubleArray();
         

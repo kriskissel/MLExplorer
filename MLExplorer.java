@@ -27,6 +27,7 @@ public class MLExplorer extends Application {
     List<String> descriptions;
     List<String> initialDataSets;
     Demo demo;
+    ModelInterface demoModel;
     
     public static void main(String[] args){
         launch(args);
@@ -48,18 +49,30 @@ public class MLExplorer extends Application {
         buttonPanel.setStringListener( new StringListener() {
             @Override
             public void textEmitted(String text) {
-                System.out.println("buttonPanel listener received message: "+text);
+                if (text == null) { return; }
                 switch (text) {
-                case "Overfitting":
+                case "Perceptron":
+                    demo = new PerceptronDemo();
+                    descriptions = demo.getDescriptions();
+                    initialDataSets = demo.getInitialDataSets();
+                    demoPanel.setTitle(demo.getTitle());
+                    demoPanel.setDescription(descriptions.get(0));
+                    demoPanel.setNumberOfDemos(descriptions.size());
+                    demoModel = demo.getModel(initialDataSets.get(0));
+                    plotController = new PlotController(demoPanel, demoModel);
+                    break;
+                
+                case "Linear Regression: Variance":
                     demo = new PolynomialRegressionBiasVarianceDemo();
                     descriptions = demo.getDescriptions();
                     initialDataSets = demo.getInitialDataSets();
                     demoPanel.setTitle(demo.getTitle());
                     demoPanel.setDescription(descriptions.get(0));
                     demoPanel.setNumberOfDemos(descriptions.size());
-                    ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
+                    demoModel = demo.getModel(initialDataSets.get(0));
                     plotController = new PlotController(demoPanel, demoModel);
                     break;
+                    
                 default:
                     System.out.println("No case in buttonPanel listener for " + text);
                     break;
@@ -99,40 +112,42 @@ public class MLExplorer extends Application {
     }
     
     private void relayMessageToPlotController(String message){
-        // really should refactor this with enumerations and a switch statement
-        if (plotController == null) {return;}
-        if (message.equals("play")){
+        // really should refactor this with enumerations
+        
+        if (plotController == null || message == null) {return;}
+        
+        switch (message) {
+        
+        case "play":
             plotController.play();
-        }
-        if (message.equals("pause")){
+            break;
+        case "pause":
             plotController.pause();
-        }
-        if (message.equals("back")){
+            break;
+        case "back":
             plotController.back();
-        }
-        if (message.equals("speedup")){
+            break;
+        case "speedup":
             plotController.speedUp();
-        }
-        if (message.equals("speeddown")){
+            break;
+        case "speeddown":
             plotController.speedDown();
-        }
-        if (message.equals("next")){
+            break;
+        case "next":
             plotController.next();
-        }
-        if (message.equals("reset")) {
+            break;
+        case "reset":
             plotController.reset();
-        }
-        if (message.equals("Demo 1")){
-            plotController.pause();
-            demoPanel.setDescription(descriptions.get(0));
-            ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
-            plotController = new PlotController(demoPanel, demoModel);
-        }
-        if (message.equals("Demo 2")){
-            plotController.pause();
-            demoPanel.setDescription(descriptions.get(1));
-            ModelInterface demoModel = demo.getModel(initialDataSets.get(1));
-            plotController = new PlotController(demoPanel, demoModel);
+            break;
+        default:
+            if (message.length() > 4 && message.substring(0, 4).equals("Demo")){
+                int demoNumber = Integer.parseInt(message.substring(5)) - 1;
+                plotController.pause();
+                demoPanel.setDescription(descriptions.get(demoNumber));
+                ModelInterface demoModel = demo.getModel(initialDataSets.get(demoNumber));
+                plotController = new PlotController(demoPanel, demoModel);
+            }
+            break;
         }
     }
 

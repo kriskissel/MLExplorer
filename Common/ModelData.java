@@ -14,10 +14,12 @@ public class ModelData {
     private ArrayList<Integer> pointClass = new ArrayList<Integer>();
     private ArrayList<ParametricFunction> curves = new ArrayList<ParametricFunction>();
     private ArrayList<Integer> curveClass = new ArrayList<Integer>();
+    private ArrayList<Double> curveAlpha = new ArrayList<Double>();
     
     public void clearCurves() {
         this.curves = new ArrayList<ParametricFunction>();
         this.curveClass = new ArrayList<Integer>();
+        this.curveAlpha = new ArrayList<Double>();
     }
     
     public ModelData copyAll(){
@@ -26,6 +28,7 @@ public class ModelData {
         for (Integer pc : this.pointClass) { cloneData.pointClass.add(pc);}
         for (ParametricFunction f : this.curves) {cloneData.curves.add(f);}
         for (Integer cc : this.curveClass) {cloneData.curveClass.add(cc);}
+        for (Double ca : this.curveAlpha) {cloneData.curveAlpha.add(ca);}
         return cloneData;
     }
     
@@ -60,6 +63,10 @@ public class ModelData {
         return curveClass;
     }
     
+    public ArrayList<Double> getCurveAlpha() {
+        return curveAlpha;
+    }
+    
     @Override
     public ModelData clone(){
         ModelData copy = new ModelData();
@@ -67,7 +74,7 @@ public class ModelData {
         copy.pointClass = new ArrayList<Integer>(this.pointClass);
         copy.curves =  new ArrayList<ParametricFunction>(this.curves);
         copy.curveClass = new ArrayList<Integer>(this.curveClass);
-        
+        copy.curveAlpha = new ArrayList<Double>(this.curveAlpha);
         return copy;
     }
     

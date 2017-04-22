@@ -63,14 +63,19 @@ public class PlotController {
         
         for (int i = 0; i < currentData.getCurves().size(); i++){
             ParametricFunction f = currentData.getCurves().get(i);
-            if (currentData.getCurveClass().get(i) == 2){
-                plot.setPlotColor(Color.BLACK);
+            int curveClass = currentData.getCurveClass().get(i);
+            double alpha = 1.0;
+            if (currentData.getCurveAlpha().size() > i) {
+                alpha = currentData.getCurveAlpha().get(i);
             }
-            else if (currentData.getCurveClass().get(i) == 1){
-                plot.setPlotColor(Color.BLUE);
+            if (curveClass == 2){ // BLACK
+                plot.setPlotColor(new Color(0,0,0,alpha));
             }
-            else  if (currentData.getCurveClass().get(i) == -1){
-                plot.setPlotColor(Color.RED);
+            else if (curveClass == 1){  // BLUE
+                plot.setPlotColor(new Color(0,0,1,alpha));
+            }
+            else  if (curveClass == -1){  // RED
+                plot.setPlotColor(new Color(1,0,0,alpha));
             }
             plot.addParametricCurve(f, this.LINE_THICKNESS);
         }

@@ -264,8 +264,6 @@ public class Matrix {
                     partialSum += this.get(i, k) * matrix.get(k, j);
                     //sum += this.array[this.n * i + k] * matrix.array[matrix.n * k + j];
                 }
-                System.out.println("trying to write " + partialSum + " to array " +
-                        "entry " + i + "," + j);
                 newArray[matrix.n * i + j] = partialSum;
             }
         }

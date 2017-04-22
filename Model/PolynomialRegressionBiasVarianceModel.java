@@ -6,6 +6,7 @@ import java.util.List;
 
 import Common.ModelData;
 import Common.ParametricFunction;
+import Common.Tuple;
 import LinearAlgebra.Regression;
 
 public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstractModel {
@@ -31,6 +32,7 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
     private int pointsPerSample = 2; // 2 is the default
     private int degreeOfPolynomial = 1; // 1 is the default
     private List<Integer> samplePointIndices;
+    private double ALPHA_FOR_CURVES = 0.2;
 
     
     @Override
@@ -43,9 +45,40 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
         }
     }
     
+    @Override
+    void parseInitialData(String dataSet){
+        this.points = new ArrayList<Tuple>();
+        this.pointClasses = new ArrayList<Integer>();
+        ArrayList<Double> w = new ArrayList<Double>();
+        String[] lines = dataSet.split("\n");
+        String mode = "not set";
+        for (String line : lines) {
+            if (line.equals("points")) {mode = "points";}
+            else if (line.equals("samplesize")) {mode = "samplesize";}
+            else if (line.equals("polynomialdegree")) {mode = "polynomialdegree";}
+            else {
+                String[] entries = line.split(",");
+                if (mode.equals("points")) {
+                    Double x = Double.parseDouble(entries[0]);
+                    Double y = Double.parseDouble(entries[1]);
+                    int c = Integer.parseInt(entries[2]);
+                    points.add(new Tuple(x,y));
+                    pointClasses.add(c);
+                }
+                else if (mode.equals("samplesize")) {
+                    this.pointsPerSample = Integer.parseInt(entries[0]);
+                }
+                else if (mode.equals("polynomialdegree")) {
+                    this.degreeOfPolynomial = Integer.parseInt(entries[0]);
+                }
+            }
+        }
+    }
+    
     
     public PolynomialRegressionBiasVarianceModel(String initialDataSet) {
         super(initialDataSet);
+        parseInitialData(initialDataSet);
         reset();
         startingData = modelHistory.get(0).copyPointsOnly(); // keep a copy for iterating
     }
@@ -71,12 +104,13 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
         // added polynomial curves
         
         ModelData newModel = modelHistory.get(modelHistory.size() - 1).copyAll();
-        // start with blue points and blue curves
+        // start with red points and blue curves
         for (int i = 0; i < newModel.getPointClass().size(); i++) {
-            newModel.getPointClass().set(i, 1);
+            newModel.getPointClass().set(i, -1);
         }
         for (int i = 0; i < newModel.getCurveClass().size(); i++) {
             newModel.getCurveClass().set(i, 1);
+            newModel.getCurveAlpha().set(i, this.ALPHA_FOR_CURVES);
         }
         
         // first stage: pick a subset of points to fit a polynomial
@@ -113,8 +147,8 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
             List<Double> xCoordinates = new ArrayList<Double>();
             List<Double> yCoordinates = new ArrayList<Double>();
             for (int i = 0; i < pointsPerSample; i++) {
-                xCoordinates.add(points.get(i).getX());
-                yCoordinates.add(points.get(i).getY());
+                xCoordinates.add(points.get(samplePointIndices.get(i)).getX());
+                yCoordinates.add(points.get(samplePointIndices.get(i)).getY());
             }
             
             // next we obtain the coefficients of the regression
@@ -127,11 +161,10 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
             // finally we add the regression curve and an
             // appropriate color code to newModel
             
-            System.out.println("adding curve in iterateModel");
-            
             
             newModel.getCurves().add(ParametricFunction.polynomialFromCoefficients(coeffs));
             newModel.getCurveClass().add(2); // set curve color to black
+            newModel.getCurveAlpha().add(1.0); // full opacity for new regression curve
             
         }
         
@@ -151,7 +184,7 @@ public class PolynomialRegressionBiasVarianceModel extends PointsAndCurvesAbstra
         // and change the colors of all curves to be the same
         if (animationStage == AnimationStage.NORMALIZE_COLORS) {
             for (int i = 0; i < newModel.getPointClass().size(); i++) {
-                newModel.getPointClass().set(i, 1);
+                newModel.getPointClass().set(i, -1);
             }
             for (int i = 0; i < newModel.getCurveClass().size(); i++) {
                 newModel.getCurveClass().set(i, 1);
