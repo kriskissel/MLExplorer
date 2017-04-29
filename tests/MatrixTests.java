@@ -217,6 +217,24 @@ public class MatrixTests {
         assertTrue(A.solve(b).closeTo(x, 0.00001));
     }
     
+    @Test 
+    public void testSolve3() {
+        Matrix A = new Matrix(new double[] {3.0, 3.0, 5.0, 3.0, 5.0, 9.0, 5.0, 9.0,
+                17.0},
+                3, 3);
+        Matrix b = new Matrix(new double[] {8.5, 14.5, 27.5}, 3, 1);
+        //Matrix y = A.transpose().times(b);
+        Matrix x = new Matrix(new double[] {0.5, -1.0, 2.0}, 3, 1);
+        System.out.println("A=");
+        System.out.println(A);
+        System.out.println("b=");
+        System.out.println(b);
+        System.out.println("Correct solution of Ax=b is:");
+        System.out.println(x);
+        System.out.println(A.solve(b));
+        assertTrue(A.solve(b).closeTo(x, 0.00001));
+    }
+    
     
 
 }
