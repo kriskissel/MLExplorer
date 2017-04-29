@@ -291,33 +291,19 @@ public class Matrix {
     private Matrix solveForSquareSystems(Matrix b){
      // start by applying any necessary permutations to b
         Matrix rightSide = b.copy();
-        System.out.println("rightSide before permutations:");
-        System.out.println(rightSide);
         if (R == null) {rowEchelonForm();}
-        System.out.println(R);
-        System.out.println("permutations:");
         for (IntegerTuple p : permutations) {
-            System.out.println(p.getX() + " <-> " + p.getY());
             rightSide.swapRows(p.getX(), p.getY());
         }
-        
-        System.out.println("rightSide after permutations:");
-        System.out.println(rightSide);
-        
-        System.out.println("next step is forward subsitution");
+
         // next we use the LU decomposition
         // first we solve Ly = b using forward substitution;
         double[] y = forwardSubstituion(rightSide.array);
-        
-        System.out.println("after forward substitution step: y =");
-        System.out.println(new Matrix(y, rightSide.m, rightSide.n));
 
-        System.out.println("next step is back substitution");
+
         // then use backsubstitution to solve Ux = y;
         double[] x = backSubstitution(y);
         
-        System.out.println("after back substitution step: y =");
-        System.out.println(new Matrix(x, this.n, 1));
         return new Matrix(x, this.n, 1);
     }
     

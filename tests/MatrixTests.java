@@ -187,12 +187,12 @@ public class MatrixTests {
     @Test
     public void testTimesWithMatrix3() {
         Matrix m1 = new Matrix(new double[] {1.0, 2.0, 2.0, 3.0}, 2, 2);
-        System.out.println(m1);
+        //System.out.println(m1);
         Matrix m2 = new Matrix(new double[] {3.0, 1.0}, 2, 1);
-        System.out.println(m2);
+        //System.out.println(m2);
         Matrix p = new Matrix(new double[] {5.0, 9.0}, 2, 1);
-        System.out.println(p);
-        System.out.println(m1.times(m2));
+        //System.out.println(p);
+        //System.out.println(m1.times(m2));
         assertTrue(m1.times(m2).closeTo(p, 0.001));
     }
     
@@ -223,15 +223,14 @@ public class MatrixTests {
                 17.0},
                 3, 3);
         Matrix b = new Matrix(new double[] {8.5, 14.5, 27.5}, 3, 1);
-        //Matrix y = A.transpose().times(b);
         Matrix x = new Matrix(new double[] {0.5, -1.0, 2.0}, 3, 1);
-        System.out.println("A=");
-        System.out.println(A);
-        System.out.println("b=");
-        System.out.println(b);
-        System.out.println("Correct solution of Ax=b is:");
-        System.out.println(x);
-        System.out.println(A.solve(b));
+        //System.out.println("A=");
+        //System.out.println(A);
+        //System.out.println("b=");
+        //System.out.println(b);
+        //System.out.println("Correct solution of Ax=b is:");
+        //System.out.println(x);
+        //System.out.println(A.solve(b));
         assertTrue(A.solve(b).closeTo(x, 0.00001));
     }
     
