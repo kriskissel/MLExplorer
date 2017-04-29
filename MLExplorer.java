@@ -4,7 +4,7 @@ import Common.ModelInterface;
 import Controller.Demo;
 import Controller.PlotController;
 import Model.PerceptronDemo;
-import Model.PolynomialRegressionBiasVarianceDemo;
+import Model.LinearRegressionVarianceDemo;
 import View.DemoButtons;
 import View.DemoPanel;
 import View.StringListener;
@@ -63,7 +63,7 @@ public class MLExplorer extends Application {
                     break;
                 
                 case "Linear Regression: Variance":
-                    demo = new PolynomialRegressionBiasVarianceDemo();
+                    demo = new LinearRegressionVarianceDemo();
                     descriptions = demo.getDescriptions();
                     initialDataSets = demo.getInitialDataSets();
                     demoPanel.setTitle(demo.getTitle());

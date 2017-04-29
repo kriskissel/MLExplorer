@@ -6,7 +6,7 @@ import java.util.List;
 import Common.ModelInterface;
 import Controller.Demo;
 
-public class PolynomialRegressionBiasVarianceDemo implements Demo {
+public class LinearRegressionVarianceDemo implements Demo {
     
     private static String points = "points\n" +
             /* OLD
