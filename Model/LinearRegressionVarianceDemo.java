@@ -37,7 +37,7 @@ public class LinearRegressionVarianceDemo implements Demo {
     
     @Override
     public ModelInterface getModel(String initialDataSet) {
-        return new PolynomialRegressionBiasVarianceModel(initialDataSet);
+        return new LinearRegressionVarianceModel(initialDataSet);
     }
 
     @Override
