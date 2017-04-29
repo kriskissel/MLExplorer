@@ -16,6 +16,7 @@ public class DemoButtons extends VBox {
         
         Button button1 = new Button("Perceptron");
         Button button2 = new Button("Linear Regression: Variance");
+        Button button3 = new Button("Bias-Variance Tradeoff");
         
         button1.setOnAction(e -> {
             if (this.textListener != null) {
@@ -29,7 +30,13 @@ public class DemoButtons extends VBox {
             }
         });
         
-        this.getChildren().addAll(button1, button2);
+        button3.setOnAction(e -> {
+            if (this.textListener != null) {
+                this.textListener.textEmitted("Bias-Variance Tradeoff");
+            }
+        });
+        
+        this.getChildren().addAll(button1, button2, button3);
     }
 
     public void setStringListener(StringListener listener){

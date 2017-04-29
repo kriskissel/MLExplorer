@@ -4,6 +4,7 @@ import Common.ModelInterface;
 import Controller.Demo;
 import Controller.PlotController;
 import Model.PerceptronDemo;
+import Model.PolynomialRegressionBiasVarianceTradeoffDemo;
 import Model.LinearRegressionVarianceDemo;
 import View.DemoButtons;
 import View.DemoPanel;
@@ -64,6 +65,17 @@ public class MLExplorer extends Application {
                 
                 case "Linear Regression: Variance":
                     demo = new LinearRegressionVarianceDemo();
+                    descriptions = demo.getDescriptions();
+                    initialDataSets = demo.getInitialDataSets();
+                    demoPanel.setTitle(demo.getTitle());
+                    demoPanel.setDescription(descriptions.get(0));
+                    demoPanel.setNumberOfDemos(descriptions.size());
+                    demoModel = demo.getModel(initialDataSets.get(0));
+                    plotController = new PlotController(demoPanel, demoModel);
+                    break;
+                    
+                case "Bias-Variance Tradeoff":
+                    demo = new PolynomialRegressionBiasVarianceTradeoffDemo();
                     descriptions = demo.getDescriptions();
                     initialDataSets = demo.getInitialDataSets();
                     demoPanel.setTitle(demo.getTitle());

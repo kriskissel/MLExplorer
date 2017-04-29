@@ -43,5 +43,24 @@ public class Regression {
         return coeffs;
     }
     
+    public static double[] polynomialRegressionAutoReduceDegree(List<Double> xCoordinates, 
+            List<Double> yCoordinates, int maxDegree) {
+        
+        double[] coeffs = new double[maxDegree + 1];
+        
+        for (int degree = maxDegree; degree >= 1; degree--) {
+            try {
+                coeffs =  polynomialRegression(xCoordinates, yCoordinates, degree);
+                break;
+            } catch (Exception e) {
+                System.out.println("Unable to peform degree " + degree + 
+                        " polynomial regression on given data");
+            }
+        }
+        return coeffs;
+        
+        
+    }
+    
 
 }

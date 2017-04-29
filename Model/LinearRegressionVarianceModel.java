@@ -155,7 +155,7 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
             // polynomial of degree degreeOfPolynomial
             
             double[] coeffs = 
-                    Regression.polynomialRegression(xCoordinates, yCoordinates, 
+                    Regression.polynomialRegressionAutoReduceDegree(xCoordinates, yCoordinates, 
                             degreeOfPolynomial);
             
             // finally we add the regression curve and an
