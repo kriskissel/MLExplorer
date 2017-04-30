@@ -9,15 +9,6 @@ import Controller.Demo;
 public class LinearRegressionVarianceDemo implements Demo {
     
     private static String points = "points\n" +
-            /* OLD
-            "-2.0,-2.05,0\n" + 
-            "-1.0,-1.1,0\n" + 
-            "0.0,0.0,0\n" + 
-            "1.0,1.07,0\n" + 
-            "2.0,2.0,0\n" +
-            "0.5,1.08,0\n" + 
-            "2.5,1.99,0\n";
-            */
             "-4.000,-4.093,-1\n" +
             "-3.500,-4.042,-1\n" +
             "-3.000,-3.717,-1\n" +

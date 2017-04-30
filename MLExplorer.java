@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 
 public class MLExplorer extends Application {
     
-    /**
-     * This is the main class for ML Explorer.
+    /*
+     * This is the main class and entry point for ML Explorer.
      * It initiates the main view and attaches a model and a controller.
      */
     
@@ -104,9 +104,8 @@ public class MLExplorer extends Application {
             }
         });
         
-        // TEMP for Testing:
-        // rewrite with subroutine for selecting demo via button panel
-        demo = new PerceptronDemo(); // this is the default option on startup
+        // the Perceptron Demo is the default on startup
+        demo = new PerceptronDemo(); 
         String demoTitle = demo.getTitle();
         descriptions = demo.getDescriptions();
         initialDataSets = demo.getInitialDataSets();
@@ -123,8 +122,14 @@ public class MLExplorer extends Application {
         
     }
     
+    /*
+     * This method is part of the communication link from the
+     * view (a DemoPanel) to the controller (a PlotController).
+     * We use strings instead of enumerations because some messages
+     * may include additional data, such as the value of a view
+     * control (e.g. a slider).
+     */
     private void relayMessageToPlotController(String message, Stage window){
-        // really should refactor this with enumerations
         
         if (plotController == null || message == null) {return;}
         

@@ -43,6 +43,11 @@ public class Tuple {
      */
     public double getY() {return this.y;}
     
+    
+    /**
+     * toString returns a string representation of
+     * the tuple in the form "(x,y)"
+     */
     @Override
     public String toString() {
         return "("+x+","+y+")";

@@ -20,13 +20,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /*
- * 
- * 
- * PLOTCONTROLLER WILL ALSO NEED TO HAVE A MODEL ATTACHED SO THAT IT CAN QUERY THE MODEL
- * FOR UPDATES VIA NEXT AND HASNEXT METHODS
+ * PlotController is a controller class for Plot views.
+ * It sends messages to the model corresponding to actions
+ * play, pause, back, next, speedup, speeddown,
+ * reset and saveScreenShotAsPNG.  The last of these is implemented
+ * entirely within this class.  The others all call appropriate methods
+ * in the model class (which must implement ModelInterface).
  */
-
-
 public class PlotController {
 
     Plot plot;
@@ -39,22 +39,34 @@ public class PlotController {
     int PLOT_HEIGHT = 450;
     int CIRCLE_RADIUS = 10;
     int LINE_THICKNESS = 4;
+    double PLOT_X_MIN = -8.0;
+    double PLOT_X_MAX = 8.0;
+    double PLOT_Y_MIN = -6.0;
+    double PLOT_Y_MAX = 6.0;
     
     
-    // the constructor should also take a model class instance as a parameter and attach it
-    // to the model instance variable.  Then the play method will make calls to the model.
+    /*
+     * The constructor attaches a model, then points the instance variable
+     * this.currentData to the model's first output, and displays that
+     * data in a new Plot.
+     */
     public PlotController(DemoPanel demoPanel, ModelInterface model){
         this.demoPanel = demoPanel;
         this.model = model;
         this.currentData = model.first();
-        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
+        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, 
+                PLOT_X_MIN, PLOT_X_MAX, PLOT_Y_MIN, PLOT_Y_MAX);
         demoPanel.setGraph(plot);
         setPlot();
     }
     
+    
+    /*
+     * setPlot creates a new plot to reflect the state of this.currentData.
+     */
     private void setPlot(){
-        // for now, we just draw points and curves, we'll save coloring based on classes for later
-        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
+        this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, 
+                PLOT_X_MIN, PLOT_X_MAX, PLOT_Y_MIN, PLOT_Y_MAX);
         demoPanel.setGraph(plot);
         for (int i = 0; i < currentData.getPoints().size(); i++){
             Tuple point = currentData.getPoints().get(i);
@@ -84,19 +96,28 @@ public class PlotController {
             else if (curveClass == 1){  // BLUE
                 plot.setPlotColor(new Color(0,0,1,alpha));
             }
-            else  if (curveClass == -1){  // RED
+            else  if (curveClass == -1 || curveClass == 0){  // RED
                 plot.setPlotColor(new Color(1,0,0,alpha));
             }
             plot.addParametricCurve(f, this.LINE_THICKNESS);
         }
     }
     
+    /*
+     * removes all data from the current plot
+     */
     private void clearPlot(){
         plot.removeAll();
     }
 
     
-    
+    /*
+     * play runs the animation by repeatedly calling the model's next method,
+     * as long as hasNext evaluates true.  After the first
+     * iteration, play always checks the instance
+     * variable stopped to see if another method has interrupted the
+     * animation (e.g. the pause method changes stopped to true).  
+     */
     public void play(){
         stopped = false;
         new AnimationTimer() {
@@ -118,10 +139,20 @@ public class PlotController {
         }.start();
         }
     
+    /*
+     * pause sets the instance variable stopped to true so that the
+     * play method will terminate its loop
+     */
+    /**
+     * stops animation
+     */
     public void pause() {
         stopped = true;
     }
     
+    /**
+     * steps back one frame in the animation
+     */
     public void back() {
         pause();
         if (model.hasPrevious()){
@@ -130,6 +161,9 @@ public class PlotController {
         }
     }
     
+    /**
+     * steps forward one frame in the animation ONLY IF there is a next frame
+     */
     public void next() {
         pause();
         if (model.hasNext()){
@@ -138,24 +172,40 @@ public class PlotController {
         }
     }
     
+    /*
+     * called after an update to the model
+     */
     private void incrementAnimation(){
         clearPlot();
         currentData = model.next();
         setPlot();
     }
     
+    /**
+     * halves wait time between consecutive frames unless already at
+     * fastest setting (1 millisecond)
+     */
     public void speedUp() {
         if (frameDelay > 1) {
             frameDelay /= 2;
         }
     }
     
+    /**
+     * doubles wait time between consecutive frames unless already at
+     * slowest setting (8.192 seconds)
+     */
     public void speedDown() {
         if (frameDelay <= 8192) {
             frameDelay *= 2;
         }
     }
     
+    /**
+     * restarts model to first frame, removing all animation history
+     * note that if the model implements a randomized algorithm, playing
+     * after reset may result in a different animation than previously viewed
+     */
     public void reset(){
         pause();
         model.reset();
@@ -165,6 +215,13 @@ public class PlotController {
         setPlot();
     }
     
+    /**
+     * Opens a file chooser window so that the user can save the current
+     * frame of animation and performs that save operation.  If the filename
+     * selected by the user does not already end in .png, that extension
+     * is automatically added.
+     * @param window the parent of the file chooser pop-up window
+     */
     public void saveScreenShotAsPNG(Stage window) {
         WritableImage image = plot.snapshot(new SnapshotParameters(), null);
         FileChooser fileChooser = new FileChooser();

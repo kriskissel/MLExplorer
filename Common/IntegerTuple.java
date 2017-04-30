@@ -20,13 +20,6 @@ public class IntegerTuple {
         this.y = y;
     }
 
-    /**
-     * alternative constructor for convenience, allows user to define tuple with integers,
-     * internally converts representation to doubles
-     * @param x x-coordinate of the represented point
-     * @param y y-coordinate of the represented point
-     */
-
 
 
     /**
@@ -41,6 +34,10 @@ public class IntegerTuple {
      */
     public int getY() {return this.y;}
 
+    /**
+     * toString returns a string representation of
+     * the tuple in the form "(x,y)"
+     */
     @Override
     public String toString() {
         return "("+x+","+y+")";

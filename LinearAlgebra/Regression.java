@@ -5,6 +5,14 @@ import java.util.Random;
 
 public class Regression {
     
+    /**
+     * 
+     * @param xCoordinates list of x values
+     * @param yCoordinates list of y values
+     * @param degree degree of polynomial to fit
+     * @return polynomial p(x) of required degree that minimizes the
+     * sum of (p(x)-y)^2 over each pair (x,y)
+     */
     public static double[] polynomialRegression(List<Double> xCoordinates, 
             List<Double> yCoordinates, int degree) {
         
@@ -40,6 +48,15 @@ public class Regression {
         return coeffs;
     }
     
+    /**
+     * 
+     * @param xCoordinates list of x values
+     * @param yCoordinates list of y values
+     * @param maxDegree maximum degree of polynomial to fit
+     * @return polynomial p(x) of degree less than or equal to
+     * maxDegree that minimizes the
+     * sum of (p(x)-y)^2 over each pair (x,y)
+     */
     public static double[] polynomialRegressionAutoReduceDegree(List<Double> xCoordinates, 
             List<Double> yCoordinates, int maxDegree) {
         

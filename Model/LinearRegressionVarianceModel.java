@@ -27,7 +27,6 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
         }
     }
     
-    //private Random random = new Random(); // used for selecting subset of points for fitting
     private AnimationStage animationStage = AnimationStage.START_NEW_CYCLE;
     private int pointsPerSample = 2; // 2 is the default
     private int degreeOfPolynomial = 1; // 1 is the default
@@ -176,7 +175,6 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
             for (int i = 0; i < pointsPerSample; i++) {
                 newModel.getPointClass().set(samplePointIndices.get(i), 2);
             }
-            //newModel.getCurveClass().set(newModel.getCurveClass().size()-1, 0);
         }
         
         

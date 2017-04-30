@@ -8,6 +8,13 @@ public class ParametricFunction implements Function<Double, Tuple>{
     private Function<Double, Double> xFunction, yFunction;
     private Double tMin, tMax;
     
+    /**
+     * 
+     * @param xFunction a function of the form t -> x(t)
+     * @param yFunction a function of the form t -> y(t)
+     * @param tMin minimum t-value for plotting
+     * @param tMax maximum t-value for plotting
+     */
     public ParametricFunction(Function<Double, Double> xFunction, Function<Double, Double> yFunction, 
             Double tMin, Double tMax){
         this.xFunction = xFunction;
@@ -74,6 +81,12 @@ public class ParametricFunction implements Function<Double, Tuple>{
         return f;
     }
     
+    /**
+     * 
+     * @param V a Tuple representing a unit vector in the xy-plane
+     * @return a paramatric function whose graph will represent the
+     * unit vector V with its tail at the origin.
+     */
     public static ParametricFunction unitVector(Tuple V){
         Double normV = Math.sqrt(V.getX()*V.getX() + V.getY()*V.getY());
         Double u_x = V.getX() / normV;
@@ -93,16 +106,35 @@ public class ParametricFunction implements Function<Double, Tuple>{
         return f;
     }
     
+    /**
+     * 
+     * @param V a Tuple representing a vector in the xy-plane
+     * @param theta an angle in radians
+     * @return a vector corresponding to the result of rotating V
+     * counterclockwise by an angle theta radians
+     */
     private static Tuple rotateVector(Tuple V, Double theta){
         Double w_x = Math.cos(theta)*V.getX() + Math.sin(theta)*V.getY();
         Double w_y = -Math.sin(theta)*V.getX() + Math.cos(theta)*V.getY();
         return new Tuple(w_x, w_y);
     }
     
+    /**
+     * 
+     * @return minimum t-value for plotting
+     */
     public Double getTMin() {return this.tMin;}
     
+    /**
+     * 
+     * @return maximum t-value for plotting
+     */
     public Double getTMax() {return this.tMax;}
 
+    /**
+     * @return the result of applying the parametric function represented by 
+     * this instance to the input value t
+     */
     @Override
     public Tuple apply(Double t) {
         return new Tuple(xFunction.apply(t), yFunction.apply(t));
