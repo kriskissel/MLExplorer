@@ -59,6 +59,8 @@ public class PolynomialRegressionBiasVarianceTradeoffDemo implements Demo {
                 "random subsamples of size 10 from a dataset of cubic plus noise");
         descriptions.add("Fitting cubic functions to " +
                 "random subsamples of size 10 from a dataset of cubic plus noise");
+        descriptions.add("Fitting quartic functions to " +
+                "random subsamples of size 10 from a dataset of cubic plus noise");
         return descriptions;
     }
     
@@ -71,6 +73,8 @@ public class PolynomialRegressionBiasVarianceTradeoffDemo implements Demo {
         initialDataSets.add(demo2);
         String demo3 = points + "samplesize\n10\npolynomialdegree\n3";
         initialDataSets.add(demo3);
+        String demo4 = points + "samplesize\n10\npolynomialdegree\n4";
+        initialDataSets.add(demo4);
         return initialDataSets;
     }
 

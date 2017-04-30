@@ -100,7 +100,7 @@ public class MLExplorer extends Application {
         demoPanel.setStringListener(new StringListener() {
             @Override
             public void textEmitted(String text) {
-                relayMessageToPlotController(text);
+                relayMessageToPlotController(text, window);
             }
         });
         
@@ -123,7 +123,7 @@ public class MLExplorer extends Application {
         
     }
     
-    private void relayMessageToPlotController(String message){
+    private void relayMessageToPlotController(String message, Stage window){
         // really should refactor this with enumerations
         
         if (plotController == null || message == null) {return;}
@@ -151,6 +151,9 @@ public class MLExplorer extends Application {
         case "reset":
             plotController.reset();
             break;
+        case "screenshot":
+            plotController.pause();
+            plotController.saveScreenShotAsPNG(window);
         default:
             if (message.length() > 4 && message.substring(0, 4).equals("Demo")){
                 int demoNumber = Integer.parseInt(message.substring(5)) - 1;

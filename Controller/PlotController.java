@@ -1,5 +1,10 @@
 package Controller;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import Common.ModelData;
 import Common.ModelInterface;
 import Common.ParametricFunction;
@@ -7,7 +12,12 @@ import Common.Tuple;
 import View.DemoPanel;
 import View.Plot;
 import javafx.animation.AnimationTimer;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /*
  * 
@@ -153,6 +163,22 @@ public class PlotController {
         this.plot = new Plot(0.1, PLOT_WIDTH, PLOT_HEIGHT, -8.0, 8.0, -6.0, 6.0);
         demoPanel.setGraph(plot);
         setPlot();
+    }
+    
+    public void saveScreenShotAsPNG(Stage window) {
+        WritableImage image = plot.snapshot(new SnapshotParameters(), null);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Screen Shot Filename and Location for Saving");
+        File file = fileChooser.showSaveDialog(window);
+        // append .png if not already there
+        if (!file.getPath().substring(file.getPath().length()-4).equals(".png")) {
+            file = new File(file.getAbsolutePath() + ".png");
+        }
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            // TODO: handle exception here
+        }
     }
 
     

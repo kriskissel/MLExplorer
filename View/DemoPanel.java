@@ -49,7 +49,10 @@ public class DemoPanel extends BorderPane {
         speedUp.setOnAction(e -> emitMessageText("speedup"));
         Button next = new Button("Next");
         next.setOnAction(e -> emitMessageText("next"));
-        controls.getChildren().addAll(rewind, pause, back, speedDown, play, speedUp, next);
+        Button screenShot = new Button("Save Screen Shot");
+        screenShot.setOnAction(e -> emitMessageText("screenshot"));
+        controls.getChildren().addAll(rewind, pause, 
+                back, speedDown, play, speedUp, next, screenShot);
         
         // Create demo selection panel
         HBox demoSelections = new HBox(10);
