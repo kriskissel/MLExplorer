@@ -18,7 +18,7 @@ public class Regression {
         int index = 0;
         for (Double x : xCoordinates) {
             double v = 1.0;
-            for (int i = 0; i <= degree; i ++) {
+            for (int i = 0; i <= degree; i++) {
                 coefficientMatrix[index] = v;
                 v *= x;
                 index++;

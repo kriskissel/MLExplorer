@@ -196,6 +196,36 @@ public class MatrixTests {
         assertTrue(m1.times(m2).closeTo(p, 0.001));
     }
     
+    
+    @Test
+    public void testTimesWithMatrix4() {
+        Matrix L = new Matrix(new double[] {
+                1.0000, 0.0000, 0.0000, 0.0, 
+                0.1667, 1.0000, 0.0000, 0.0,
+                0.3889, 0.4318, 1.0000, 0.0,
+                0.1111, 0.4773, 0.9575, 1.0},
+                4, 4);
+        Matrix U = new Matrix(new double[] {
+                36.000, 98.000, 276.00, 794.00, 
+                0.0000, -4.889, -16.67, -52.22,
+                0.0000, 0.0000, -2.136, -10.23,
+                0.0000, 0.0000, 0.0000, 0.3829},
+                4, 4);
+        Matrix correctLU = new Matrix(new double[] {
+                36.000, 98.000, 276.00, 794.00, 
+                6.0012, 11.448, 29.229, 80.139,
+                14.000, 36.001, 98.002, 276.01,
+                3.9996, 8.5543, 20.662, 53.877},
+                4, 4);
+        
+        Matrix LU = L.times(U);
+        //System.out.println("******LU*******");
+        //System.out.println(LU);
+        //System.out.println("**correctLU****");
+        //System.out.println(correctLU);
+        assert(LU.closeTo(correctLU, 0.2));
+    }
+    
     @Test
     public void testSolve1() {
         Matrix A = new Matrix(new double[] {2.0, 3.0, 3.0, 2.0}, 2, 2);
@@ -233,6 +263,222 @@ public class MatrixTests {
         //System.out.println(A.solve(b));
         assertTrue(A.solve(b).closeTo(x, 0.00001));
     }
+    
+    @Test 
+    public void testSolve4() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix b = new Matrix(new double[] {-10.0, -34.0, -102.0, -304.0}, 4, 1);
+        Matrix x = new Matrix(new double[] {1.0, -1.0, 2.0, -1.0}, 4, 1);
+        //System.out.println("A=");
+        //System.out.println(A);
+        //System.out.println("b=");
+        //System.out.println(b);
+        //System.out.println("Correct solution of Ax=b is:");
+        //System.out.println(x);
+        //System.out.println(A.solve(b));
+        assertTrue(A.solve(b).closeTo(x, 0.00001));
+    }
+    
+    @Test
+    public void testLUDecomposition1() {
+        Matrix A = new Matrix(new double[] {
+                1.0, 2.0,
+                3.0, 4.0},
+                2, 2);
+        Matrix L = A.getL();
+        Matrix U = A.getR();
+        Matrix P = A.getP();
+        assertTrue(P.times(A).closeTo(L.times(U), 0.01));
+    }
+    
+    @Test
+    public void testLUDecomposition2() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix L = A.getL();
+        
+        Matrix correctL = new Matrix(new double[] {
+                1.0000, 0.0000, 0.0000, 0.0, 
+                0.1111, 1.0000, 0.0000, 0.0,
+                0.3889, 0.4318, 1.0000, 0.0,
+                0.1667, 0.4773, 0.9575, 1.0},
+                4, 4);
+
+        //System.out.println("A=");
+        //System.out.println(A);
+
+        //System.out.println("L=");
+        //System.out.println(L);
+        
+        //System.out.println("correctL=");
+        //System.out.println(correctL);
+        
+        assertTrue(L.closeTo(correctL, 0.01));
+    }
+    
+    @Test
+    public void testLUDecomposition3() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        
+        Matrix U = A.getR();
+        
+        Matrix correctU = new Matrix(new double[] {
+                36.000, 98.000, 276.00, 794.00, 
+                0.0000, -4.889, -16.67, -52.22,
+                0.0000, 0.0000, -2.136, -10.23,
+                0.0000, 0.0000, 0.0000, 0.3829},
+                4, 4);
+
+        //System.out.println("A=");
+        //System.out.println(A);
+
+        //System.out.println("U=");
+        //System.out.println(U);
+        
+        //System.out.println("correctU=");
+        //System.out.println(correctU);
+        
+        assertTrue(U.closeTo(correctU, 0.01));
+    }
+    
+    
+    @Test
+    public void testLUDecomposition4() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix L = A.getL();
+        Matrix U = A.getR();
+        Matrix P = A.getP();
+        //System.out.println("A=");
+        //System.out.println(A);
+        //System.out.println("P=");
+        //System.out.println(P);
+        //System.out.println("L=");
+        //System.out.println(L);
+        //System.out.println("U=");
+        //System.out.println(U);
+        System.out.println("testLUDecomposition4");
+        System.out.println("PA=");
+        Matrix PA = P.times(A);
+        System.out.println(PA);
+        System.out.println("LU=");
+        Matrix LU = L.times(U);
+        System.out.println(LU);
+        
+        assertTrue(PA.closeTo(LU, 0.5));
+    }
+    
+    @Test
+    public void testEliminateRow1() {
+        Matrix A = new Matrix(new Double[] {
+                1.0, 2.0, 3.0,
+                2.0, 4.0, 6.0,
+                0.0, 1.0, 2.0
+        }, 3, 3);
+        Matrix B = new Matrix(new Double[] {
+                1.0, 2.0, 3.0,
+                0.0, 0.0, 0.0,
+                0.0, 1.0, 2.0
+        }, 3, 3);
+        
+        assertTrue(A.eliminateRow(0, 1, 2).closeTo(B, 0.01));
+    }
+    
+    @Test
+    public void testRowEchelonForm5() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix P = A.getP();
+        Matrix correctP = new Matrix(new double[] {
+                0.0, 0.0, 0.0, 1.0,
+                1.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0, 0.0
+        }, 4, 4);
+        //System.out.println("A=");
+        //System.out.println(A);
+        //System.out.println("P=");
+        //System.out.println(P);
+        //System.out.println("correct P=");
+        //System.out.println(correctP);
+        
+        assertTrue(P.closeTo(correctP, 0.01));
+    }
+    
+    @Test
+    public void testRowEchelonForm6() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix correctU = new Matrix(new double[] {
+                36.0, 98.000, 276.000, 794.0000,
+                0.0, -4.8889, -16.667, -52.2222,
+                0.0, 0.00000, -2.1364, -10.2273,
+                0.0, 0.00000, 0.00000, 0.38298
+        }, 4, 4);
+        //System.out.println("A=");
+        //System.out.println(A);
+        Matrix U = A.getR();
+        //System.out.println("U=");
+        //System.out.println(U);
+        //System.out.println("correct U=");
+        //System.out.println(correctU);
+        
+        assertTrue(U.closeTo(correctU, 0.01));
+    }
+    
+    @Test
+    public void testRowEchelonForm7() {
+        Matrix A = new Matrix(new double[] {
+                4.0, 6.0, 14.0, 36.0, 
+                6.0, 14.0, 36.0, 98.0,
+                14.0, 36.0, 98.0, 276.0,
+                36.0, 98.0, 276.0, 794.0},
+                4, 4);
+        Matrix P = A.getP();
+        Matrix correctPA = new Matrix(new double[] {
+                36.0, 98.000, 276.000, 794.0000,
+                4.0, 6.0, 14.0, 36.0,
+                14.0, 36.0, 98.0, 276.0,
+                6.0, 14.0, 36.0, 98.0
+        }, 4, 4);
+        //System.out.println("A=");
+        //System.out.println(A);
+        Matrix PA = P.times(A);
+        //System.out.println("PA=");
+        //System.out.println(PA);
+        //System.out.println("correctPA=");
+        //System.out.println(correctPA);
+        
+        assertTrue(PA.closeTo(correctPA, 0.01));
+    }
+    
+    
     
     
 

@@ -119,33 +119,44 @@ public class Matrix {
                     "on non-square matrix.");
         }
         */
-        this.permutations = new ArrayList<IntegerTuple>(); // initialize record of permutations
+        
+        // initialize record of permutations
+        this.permutations = new ArrayList<IntegerTuple>(); 
         double d = 1; // used to track the determinant
+        // initilize this.rank to 0 and increase by 1 each time we find a pivot
         this.rank = 0;
-        // start with a copy of this matrix
+        
+        // start with a copy of this matrix and initiliaze L with 1s on diagonal
         this.R = this.copy();
         this.L = identity(this.m);
-        //System.out.println("Starting to reduce:");
-        //System.out.println(this.R);
-        //double[] Larray = new double[this.m * this.m]; // used to form LU decomposition
-        // now perform Gauss Elimination
+        
+        
+        // perform Gauss Elimination
+        // our first run through will determine necessary row exchanges
+        // if there are any such exchanges, we will need to run through the elimination
+        // a second time after having performed all the row exchanges in advance.
+        
+        boolean exchanges = false;
         int thisRow = 0; // keep track of current row, will advance inside loop
         int col = 0;
+        
+        // beginning of elimination phase
         while (thisRow < this.m && col < this.n){
+            
             //System.out.println("looking at entry in row "+thisRow+"and column "+col);
             // in each column, find the row below thisRow with the largest absolute value
             // swap rows to make this the pivot
             // find the largest value in this column at or below the current 
             // row to use as a pivot
             int rowWithLargestValue = thisRow;
-            double largestValue = Math.abs(this.R.array[n * thisRow + col]);
+            double largestValue = Math.abs(this.R.get(thisRow, col));
             for (int row = thisRow+1; row < m; row++){
-                if (Math.abs(R.array[n * row + col]) > largestValue) {
-                    largestValue = Math.abs(R.array[n * row + col]);
+                if (Math.abs(this.R.get(row, col)) > largestValue) {
+                    largestValue = Math.abs(this.R.get(row, col));
                     rowWithLargestValue = row;
                 }
             }
-            // if largestValueFound != 0, we have a pivot so we add 1 to the rank
+            
             // if largestValueFound == 0, we need to advance to the next column but not the
             // next row, and the determinant (if it is meaningful) is 0
             if (largestValue == 0) {
@@ -154,36 +165,84 @@ public class Matrix {
                 continue;
             }
             
+            // otherwise, largestValueFound != 0, so we have a pivot so we add 1 to the rank
+            
             // we swap rows to get the pivot
+            // we also record the row swap in our list of permutations
             if (rowWithLargestValue != thisRow) {
+                exchanges = true;
                 R.swapRows(thisRow, rowWithLargestValue);
                 permutations.add(new IntegerTuple(thisRow, rowWithLargestValue));
                 d *= -1; // row exchange changes the sign of the determinant
             }
-            // now zero out the rows below the current row
+            
+            // zero out the rows below the current row
             // if the pivot is zero, all the other values below it are also zero, so we
             // only need to do this if the pivot is not zero (in which case it's not really a pivot
-            if (largestValue != 0){
-                for (int row = thisRow + 1; row < m; row++) {
-                    double l = R.get(row,col) / R.get(thisRow, col);
-                    R.eliminateRow(thisRow, row, l);
-                    L.array[this.n * row + thisRow] = l;
-                }
+            //if (largestValue != 0){
+            for (int row = thisRow + 1; row < m; row++) {
+                double l = R.get(row,col) / R.get(thisRow, col);
+                R.eliminateRowInArray(thisRow, row, l);
+                L.array[this.n * row + thisRow] = l;
             }
+            
             d *= R.array[n * thisRow + col]; // determinant equals the product of the diagonal entries
             thisRow++;
             col++;
             this.rank++;
+        } // end of elimination phase while loop
+        
+        
+        // if we did any row exchanges, we now redo the whole process after performing
+        // all necessary exchanges in advance on a copy of the matrix
+        
+        if (exchanges) {
+            d = 1.0;
+            Matrix temp = this.copy();
+            this.L = Matrix.identity(this.m);
+            for (IntegerTuple p : permutations){
+                temp.swapRows(p.getX(), p.getY());
+                d *= -1.0;
+            }
+            thisRow = 0; 
+            col = 0;
+            while (thisRow < this.m && col < this.n) {
+                // zero out the rows below the current row
+                // if the pivot is zero, all the other values below it are also zero, so we
+                // only need to do this if the pivot is not zero (in which case it's not really a pivot
+                if (temp.get(thisRow, col) == 0) {
+                    col++;
+                    continue;
+                }
+                
+                for (int row = thisRow + 1; row < m; row++) {
+                    double l = temp.get(row,col) / temp.get(thisRow, col);
+                    temp.eliminateRowInArray(thisRow, row, l);
+                    this.L.array[this.n * row + thisRow] = l;
+                }
+                    
+                d *= temp.array[n * thisRow + col];
+                thisRow++;
+                col++;
+            }
+        this.R = temp;
         }
+        
+        
         // record the determinant in both R and the current matrix.
-        R.det = d;
+        
         this.det = d;
-        R.R = R; // R is its own row echelon form
-        // finish L with 1s on diagonal
-        //for (int i = 0; i < this.m; i++) {Larray[this.n * i + i] = 1.0;}
-        // cache it
-        //this.L = new Matrix(Larray, this.m, this.n);
+        
+        // some extra caching of results to reduce computation time later
+        this.R.det = d;
+        this.R.R = R; // R is its own row echelon form
+        this.R.L = Matrix.identity(R.m);
+        
+        this.L.det = 1.0;
         this.L.L = this.L;
+        this.L.R = Matrix.identity(L.n);
+        
+        // finally, return the row-echelon form
         return this.R;
     }
     
@@ -195,6 +254,19 @@ public class Matrix {
     public Matrix getR(){
         if (this.R != null) { return R;}
         return rowEchelonForm();
+    }
+    
+    public Matrix getP(){
+        if (this.R == null) { rowEchelonForm(); }
+        if (this.P == null) {
+            // construct an m x m identity matrix
+            this.P = Matrix.identity(this.m);
+            // then swap the rows appropriately
+            for (IntegerTuple p : this.permutations){
+                this.P.swapRows(p.getX(), p.getY());
+             }
+        }
+        return this.P;
     }
     
     
@@ -219,10 +291,23 @@ public class Matrix {
     }
     
     // subtract l times r1 from r2
-    private void eliminateRow(int r1, int r2, double l){
+    private void eliminateRowInArray(int r1, int r2, double l){
         for (int col = 0; col < this.n; col++){
             array[n * r2 + col] -= l * array[n * r1 + col];
         }
+    }
+    
+    /**
+     * Performs one step of elimination on a matrix
+     * @param r1 row to use
+     * @param r2 row to change
+     * @param l mulitple of row to use
+     * @return matrix with row r2 replaced by row r2 - l times row r1
+     */
+    public Matrix eliminateRow(int r1, int r2, double l) {
+        Matrix newMatrix = this.copy();
+        newMatrix.eliminateRowInArray(r1, r2, l);
+        return newMatrix;
     }
     
     public Matrix transpose() {
@@ -291,18 +376,32 @@ public class Matrix {
     private Matrix solveForSquareSystems(Matrix b){
      // start by applying any necessary permutations to b
         Matrix rightSide = b.copy();
+        System.out.println("right side before permutations:");
+        System.out.println(rightSide);
         if (R == null) {rowEchelonForm();}
+        
+        System.out.println("permmutations:");
+        
         for (IntegerTuple p : permutations) {
+            System.out.println(p.getX() + " <--> " + p.getY());
             rightSide.swapRows(p.getX(), p.getY());
         }
+        
+        System.out.println("right side after permutations:");
+        System.out.println(rightSide);
 
         // next we use the LU decomposition
         // first we solve Ly = b using forward substitution;
         double[] y = forwardSubstituion(rightSide.array);
 
+        System.out.println("after forward substitution Ly = Pb, y =");
+        System.out.println(new Matrix(y, rightSide.m, rightSide.n));
 
         // then use backsubstitution to solve Ux = y;
         double[] x = backSubstitution(y);
+        
+        System.out.println("after backsubstitution Ux = y, x =");
+        System.out.println(new Matrix(x, rightSide.m, rightSide.n));
         
         return new Matrix(x, this.n, 1);
     }
@@ -311,14 +410,20 @@ public class Matrix {
         // performs the forward substitution step in solving Ly=b
         // L is m-by-m, so y will be an m-dimensional vector
         // recall that L has ones on the diagonal and is lower triangular
-        // hence each row corresponds to an equation of the form
-        // c_1*y_1+c_2*y_2+...+c_(n-1)*y_(n-1) + y_n = b_n
-        // express this ia partial_sum + y_n = b_n
+        // hence the kth row corresponds to an equation of the form
+        // c_0*y_0+c_1*y_1+...+c_(k-1)*y_(k-1) + y_k = b_k
+        // express this as partial_sum + y_k = b_k
+        
+        System.out.println("Using L = ");
+        System.out.println(this.L);
+        
         double[] y = new double[this.m];
-        for (int i = 0; i < this.m; i++){
-            double partial_sum = 0; // accumulator
-            for (int j = 0; j < i; j++) { partial_sum += L.get(i, j) * y[j]; }
-            y[i] = b[i]- partial_sum;
+        // k is the row number indexed from 0
+        for (int k = 0; k < this.m; k++){
+            double partial_sum = 0; // accumulator for partial sum
+            // j is the column number
+            for (int j = 0; j < k; j++) { partial_sum += L.get(k, j) * y[j]; }
+            y[k] = b[k]- partial_sum;
         }
         return y;
     }
@@ -336,6 +441,11 @@ public class Matrix {
         // in that case, we throw a RuntimeException
         // If a system has multiple solution, we return the one the particular solution
         // that corresponds to all free variables being zero
+        
+        System.out.println("Using U = ");
+        System.out.println(this.R);
+        
+        
         double[] x = new double[this.n];
         for (int i = this.n-1; i >= 0; i--) {
             int k = 0;
