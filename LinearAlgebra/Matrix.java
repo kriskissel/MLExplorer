@@ -376,32 +376,32 @@ public class Matrix {
     private Matrix solveForSquareSystems(Matrix b){
      // start by applying any necessary permutations to b
         Matrix rightSide = b.copy();
-        System.out.println("right side before permutations:");
-        System.out.println(rightSide);
+        //System.out.println("right side before permutations:");
+        //System.out.println(rightSide);
         if (R == null) {rowEchelonForm();}
         
-        System.out.println("permmutations:");
+        //System.out.println("permmutations:");
         
         for (IntegerTuple p : permutations) {
-            System.out.println(p.getX() + " <--> " + p.getY());
+            //System.out.println(p.getX() + " <--> " + p.getY());
             rightSide.swapRows(p.getX(), p.getY());
         }
         
-        System.out.println("right side after permutations:");
-        System.out.println(rightSide);
+        //System.out.println("right side after permutations:");
+        //System.out.println(rightSide);
 
         // next we use the LU decomposition
         // first we solve Ly = b using forward substitution;
         double[] y = forwardSubstituion(rightSide.array);
 
-        System.out.println("after forward substitution Ly = Pb, y =");
-        System.out.println(new Matrix(y, rightSide.m, rightSide.n));
+        //System.out.println("after forward substitution Ly = Pb, y =");
+        //System.out.println(new Matrix(y, rightSide.m, rightSide.n));
 
         // then use backsubstitution to solve Ux = y;
         double[] x = backSubstitution(y);
         
-        System.out.println("after backsubstitution Ux = y, x =");
-        System.out.println(new Matrix(x, rightSide.m, rightSide.n));
+        //System.out.println("after backsubstitution Ux = y, x =");
+        //System.out.println(new Matrix(x, rightSide.m, rightSide.n));
         
         return new Matrix(x, this.n, 1);
     }
@@ -414,8 +414,8 @@ public class Matrix {
         // c_0*y_0+c_1*y_1+...+c_(k-1)*y_(k-1) + y_k = b_k
         // express this as partial_sum + y_k = b_k
         
-        System.out.println("Using L = ");
-        System.out.println(this.L);
+        //System.out.println("Using L = ");
+        //System.out.println(this.L);
         
         double[] y = new double[this.m];
         // k is the row number indexed from 0
@@ -442,8 +442,8 @@ public class Matrix {
         // If a system has multiple solution, we return the one the particular solution
         // that corresponds to all free variables being zero
         
-        System.out.println("Using U = ");
-        System.out.println(this.R);
+        //System.out.println("Using U = ");
+        //System.out.println(this.R);
         
         
         double[] x = new double[this.n];

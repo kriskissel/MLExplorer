@@ -375,13 +375,13 @@ public class MatrixTests {
         //System.out.println(L);
         //System.out.println("U=");
         //System.out.println(U);
-        System.out.println("testLUDecomposition4");
-        System.out.println("PA=");
+        //System.out.println("testLUDecomposition4");
+        //System.out.println("PA=");
         Matrix PA = P.times(A);
-        System.out.println(PA);
-        System.out.println("LU=");
+        //System.out.println(PA);
+        //System.out.println("LU=");
         Matrix LU = L.times(U);
-        System.out.println(LU);
+        //System.out.println(LU);
         
         assertTrue(PA.closeTo(LU, 0.5));
     }

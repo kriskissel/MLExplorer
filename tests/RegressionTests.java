@@ -71,7 +71,7 @@ public class RegressionTests {
         yCoordinates.add(-1.0);
         yCoordinates.add(-11.0);
         double[] coeffs = Regression.polynomialRegression(xCoordinates, yCoordinates, 3);
-        for (double d : coeffs) { System.out.println(d); }
+        //for (double d : coeffs) { System.out.println(d); }
         assertTrue(coeffs[0] < 1.01 && coeffs[0] > 0.99); // coeffs[0] should be 1
         assertTrue(coeffs[1] < -0.99 && coeffs[1] > -1.01); // coeffs[1] shoudl be -1
         assertTrue(coeffs[2] < 2.01 && coeffs[2] > 1.99); // coeffs[2] should be 2
