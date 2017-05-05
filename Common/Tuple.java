@@ -1,5 +1,7 @@
 package Common;
 
+import java.awt.Point;
+
 /**
  * Immutable type represents pairs of real numbers, such as in a coordinate plane.
  * @author kriskissel
@@ -42,6 +44,17 @@ public class Tuple {
      * @return y-coordinate of the represented point
      */
     public double getY() {return this.y;}
+    
+    /**
+     * 
+     * @param other another Eucliden point
+     * @return the square of the Euclidean distance between this and other
+     */
+    public double squareDistanceTo(Tuple other){
+        double deltaX = this.x - other.x;
+        double deltaY = this.y - other.y;
+        return deltaX*deltaX + deltaY*deltaY;
+    }
     
     
     /**

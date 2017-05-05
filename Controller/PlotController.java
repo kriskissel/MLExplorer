@@ -79,6 +79,12 @@ public class PlotController {
             else  if (currentData.getPointClass().get(i) == -1){
                 plot.setPlotColor(Color.RED);
             }
+            else  if (currentData.getPointClass().get(i) == 0){
+                plot.setPlotColor(Color.GREEN);
+            }
+            else  if (currentData.getPointClass().get(i) == 3){
+                plot.setPlotColor(Color.YELLOW);
+            }
             
             plot.addCircle(point.getX(), point.getY(), this.CIRCLE_RADIUS);
         }
@@ -167,6 +173,7 @@ public class PlotController {
     public void next() {
         pause();
         if (model.hasNext()){
+            plot.removeAll();
             currentData = model.next();
             setPlot();
         }
