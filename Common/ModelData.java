@@ -13,6 +13,7 @@ public class ModelData {
 
     private ArrayList<Tuple> points = new ArrayList<Tuple>();
     private ArrayList<Integer> pointClass = new ArrayList<Integer>();
+    private ArrayList<Double> pointAlpha = new ArrayList<Double>();
     private ArrayList<ParametricFunction> curves = new ArrayList<ParametricFunction>();
     private ArrayList<Integer> curveClass = new ArrayList<Integer>();
     private ArrayList<Double> curveAlpha = new ArrayList<Double>();
@@ -41,6 +42,7 @@ public class ModelData {
         for (ParametricFunction f : this.curves) {cloneData.curves.add(f);}
         for (Integer cc : this.curveClass) {cloneData.curveClass.add(cc);}
         for (Double ca : this.curveAlpha) {cloneData.curveAlpha.add(ca);}
+        for (Double ca : this.pointAlpha) {cloneData.pointAlpha.add(ca);}
         return cloneData;
     }
     
@@ -53,6 +55,7 @@ public class ModelData {
         ModelData cloneData = new ModelData();
         for (Tuple point : this.points) { cloneData.points.add(point);}
         for (Integer pc : this.pointClass) { cloneData.pointClass.add(pc);}
+        for (Double ca : this.pointAlpha) {cloneData.pointAlpha.add(ca);}
         return cloneData;
     }
     
@@ -80,6 +83,15 @@ public class ModelData {
      */
     public void setPointClasses(ArrayList<Integer> pointClasses){
         this.pointClass = pointClasses;
+    }
+    
+    /**
+     * 
+     * @param pointClasses doubles defining the opacity of each point, used
+     * to draw them on the plots.  Legal values are 0 <= x <= 1.
+     */
+    public void setPointAlphas(ArrayList<Double> pointAlpha){
+        this.pointAlpha = pointAlpha;
     }
 
     /**
@@ -117,6 +129,15 @@ public class ModelData {
     }
     
     /**
+     * 
+     * @return list of alpha values (opacity) for points shown in plots.
+     */
+    public ArrayList<Double> getPointAlpha() {
+        return pointAlpha;
+    }
+    
+    
+    /**
      * create a complete copy of this ModelData instance
      */
     @Override
@@ -127,6 +148,7 @@ public class ModelData {
         copy.curves =  new ArrayList<ParametricFunction>(this.curves);
         copy.curveClass = new ArrayList<Integer>(this.curveClass);
         copy.curveAlpha = new ArrayList<Double>(this.curveAlpha);
+        copy.pointAlpha = new ArrayList<Double>(this.pointAlpha);
         return copy;
     }
     

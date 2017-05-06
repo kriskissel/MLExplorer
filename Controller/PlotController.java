@@ -69,23 +69,41 @@ public class PlotController {
                 PLOT_X_MIN, PLOT_X_MAX, PLOT_Y_MIN, PLOT_Y_MAX);
         demoPanel.setGraph(plot);
         for (int i = 0; i < currentData.getPoints().size(); i++){
-            Tuple point = currentData.getPoints().get(i);
-            if (currentData.getPointClass().get(i) == 2){
-                plot.setPlotColor(Color.BLACK);
-            }
-            else if (currentData.getPointClass().get(i) == 1){
-                plot.setPlotColor(Color.BLUE);
-            }
-            else  if (currentData.getPointClass().get(i) == -1){
-                plot.setPlotColor(Color.RED);
-            }
-            else  if (currentData.getPointClass().get(i) == 0){
-                plot.setPlotColor(Color.GREEN);
-            }
-            else  if (currentData.getPointClass().get(i) == 3){
-                plot.setPlotColor(Color.YELLOW);
+            
+            // set opacity
+            double alpha = 1.0;
+            if (currentData.getPointAlpha().size() > i) {
+                alpha = currentData.getPointAlpha().get(i);
             }
             
+            // set color
+            Tuple point = currentData.getPoints().get(i);
+
+            if (currentData.getPointClass().get(i) == 2){
+                // BLACK
+                plot.setPlotColor(new Color(0.0, 0.0, 0.0, alpha));
+            }
+            
+            else if (currentData.getPointClass().get(i) == 1){
+                // BLUE
+                plot.setPlotColor(new Color(0.0, 0.0, 1.0, alpha));
+            }
+            else  if (currentData.getPointClass().get(i) == -1){
+                // RED
+                plot.setPlotColor(new Color(1.0, 0.0, 0.0, alpha));
+            }
+            else  if (currentData.getPointClass().get(i) == 0){
+                // A GREEN
+                plot.setPlotColor(new Color(81.0 / 255.0, 168.0 / 255.0, 59.0 / 255.0, alpha));
+            }
+            else  if (currentData.getPointClass().get(i) == 3){
+                // YELLOW
+                plot.setPlotColor(new Color(1.0, 1.0, 0.0, alpha));
+            }
+            
+            
+            
+            // add to figure
             plot.addCircle(point.getX(), point.getY(), this.CIRCLE_RADIUS);
         }
         
