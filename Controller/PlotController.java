@@ -97,8 +97,8 @@ public class PlotController {
                 plot.setPlotColor(new Color(81.0 / 255.0, 168.0 / 255.0, 59.0 / 255.0, alpha));
             }
             else  if (currentData.getPointClass().get(i) == 3){
-                // YELLOW
-                plot.setPlotColor(new Color(1.0, 1.0, 0.0, alpha));
+                // ORANGE
+                plot.setPlotColor(new Color(1.0, 165.0 / 255.0, 0.0, alpha));
             }
             
             

@@ -17,6 +17,7 @@ public class ModelData {
     private ArrayList<ParametricFunction> curves = new ArrayList<ParametricFunction>();
     private ArrayList<Integer> curveClass = new ArrayList<Integer>();
     private ArrayList<Double> curveAlpha = new ArrayList<Double>();
+    private boolean stoppedChanging = false;
     
     /**
      * removes all curves from the data
@@ -43,6 +44,7 @@ public class ModelData {
         for (Integer cc : this.curveClass) {cloneData.curveClass.add(cc);}
         for (Double ca : this.curveAlpha) {cloneData.curveAlpha.add(ca);}
         for (Double ca : this.pointAlpha) {cloneData.pointAlpha.add(ca);}
+        cloneData.stoppedChanging = this.stoppedChanging;
         return cloneData;
     }
     
@@ -178,6 +180,12 @@ public class ModelData {
      */
     public void setCurveClass(ArrayList<Integer> curveClass){
         this.curveClass = curveClass;
+    }
+    
+    public boolean getStoppedChanging() { return this.stoppedChanging;}
+    
+    public void setStoppedChanging(boolean stopped) {
+        this.stoppedChanging = stopped;
     }
     
 }
