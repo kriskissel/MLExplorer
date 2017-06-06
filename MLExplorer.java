@@ -55,32 +55,13 @@ public class MLExplorer extends Application {
                 if (text == null) { return; }
                 switch (text) {
                 case "Perceptron":
-                    demo = new PerceptronDemo();
-                    descriptions = demo.getDescriptions();
-                    initialDataSets = demo.getInitialDataSets();
-                    demoPanel.setTitle(demo.getTitle());
-                    demoPanel.setDescription(descriptions.get(0));
-                    demoPanel.setNumberOfDemos(descriptions.size());
-                    demoModel = demo.getModel(initialDataSets.get(0));
-                    demoPanel.showOption1(demo.option1used(), 
-                            demo.option1Label(), demo.option1Value(), 
-                            demo.option1Sublabel());
-                    plotController = new PlotController(demoPanel, demoModel);
+                    setDemo(new PerceptronDemo());
                     break;
                 
                 case "Linear Regression: Variance":
-                    demo = new LinearRegressionVarianceDemo();
-                    descriptions = demo.getDescriptions();
-                    initialDataSets = demo.getInitialDataSets();
-                    demoPanel.setTitle(demo.getTitle());
-                    demoPanel.setDescription(descriptions.get(0));
-                    demoPanel.setNumberOfDemos(descriptions.size());
-                    demoModel = demo.getModel(initialDataSets.get(0));
-                    demoPanel.showOption1(demo.option1used(), 
-                            demo.option1Label(), demo.option1Value(),
-                            demo.option1Sublabel());
-                    plotController = new PlotController(demoPanel, demoModel);
+                    setDemo(new LinearRegressionVarianceDemo());
                     break;
+                    
                 /*   
                 case "Bias-Variance Tradeoff":
                     demo = new PolynomialRegressionBiasVarianceTradeoffDemo();
@@ -98,31 +79,11 @@ public class MLExplorer extends Application {
                 */
                     
                 case "K-Means Clustering":
-                    demo = new KMeansClusteringDemo();
-                    descriptions = demo.getDescriptions();
-                    initialDataSets = demo.getInitialDataSets();
-                    demoPanel.setTitle(demo.getTitle());
-                    demoPanel.setDescription(descriptions.get(0));
-                    demoPanel.setNumberOfDemos(descriptions.size());
-                    demoModel = demo.getModel(initialDataSets.get(0));
-                    demoPanel.showOption1(demo.option1used(), 
-                            demo.option1Label(), demo.option1Value(), 
-                            demo.option1Sublabel());
-                    plotController = new PlotController(demoPanel, demoModel);
+                    setDemo(new KMeansClusteringDemo());
                     break;
                     
                 case "Regularization":
-                    demo = new PolynomialRegressionWithRegularizationDemo();
-                    descriptions = demo.getDescriptions();
-                    initialDataSets = demo.getInitialDataSets();
-                    demoPanel.setTitle(demo.getTitle());
-                    demoPanel.setDescription(descriptions.get(0));
-                    demoPanel.setNumberOfDemos(descriptions.size());
-                    demoModel = demo.getModel(initialDataSets.get(0));
-                    demoPanel.showOption1(demo.option1used(), 
-                            demo.option1Label(), demo.option1Value(), 
-                            demo.option1Sublabel());
-                    plotController = new PlotController(demoPanel, demoModel);
+                    setDemo(new PolynomialRegressionWithRegularizationDemo());
                     break;
                     
                 default:
@@ -145,21 +106,28 @@ public class MLExplorer extends Application {
         });
         
         // the Perceptron Demo is the default on startup
-        demo = new PerceptronDemo(); 
-        String demoTitle = demo.getTitle();
-        descriptions = demo.getDescriptions();
-        initialDataSets = demo.getInitialDataSets();
-        demoPanel.setTitle(demoTitle);
-        demoPanel.setDescription(descriptions.get(0));
-        demoPanel.setNumberOfDemos(descriptions.size());
-        ModelInterface demoModel = demo.getModel(initialDataSets.get(0));
-        plotController = new PlotController(demoPanel, demoModel);
+        setDemo(new PerceptronDemo()); 
+        
         
         Scene scene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
         window.setScene(scene);
         window.show();
 
         
+    }
+    
+    private void setDemo(Demo demo) {
+        this.demo = demo;
+        this.descriptions = demo.getDescriptions();
+        this.initialDataSets = demo.getInitialDataSets();
+        this.demoPanel.setTitle(demo.getTitle());
+        this.demoPanel.setDescription(descriptions.get(0));
+        this.demoPanel.setNumberOfDemos(descriptions.size());
+        this.demoModel = demo.getModel(initialDataSets.get(0));
+        this.demoPanel.showOption1(demo.option1used(), 
+                demo.option1Label(), demo.option1Value(), 
+                demo.option1Sublabel());
+        this.plotController = new PlotController(demoPanel, demoModel);
     }
     
     /*
