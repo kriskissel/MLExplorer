@@ -220,4 +220,26 @@ public class KMeansClusteringDemo implements Demo {
         return initialDataSets;
     }
 
+    @Override
+    public boolean option1used() {
+        return false;
+    }
+
+    @Override
+    public String option1Label() {
+        return "";
+    }
+
+    @Override
+    public String option1Value() {
+        return "";
+    }
+    
+    @Override
+    public String option1Sublabel() {
+        return "";
+    }
+    
+    
+
 }

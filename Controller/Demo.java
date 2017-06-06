@@ -37,4 +37,31 @@ public interface Demo {
      */
     public List<String> getInitialDataSets();
     
+    /**
+     * 
+     * @return true if demo uses option1 selector
+     */
+    public boolean option1used();
+    
+    /**
+     * 
+     * @return the display value for option1 label
+     * override with "" (or anything) if option1 is not used
+     */
+    public String option1Label();
+    
+    /**
+     * 
+     * @return the display value for option1 value
+     * override with "" (or anything) if option1 is not used
+     */
+    public String option1Value();
+    
+    /**
+     * 
+     * @return the display value for option1 sublabel
+     * override with "" (or anything) if option1 is not used
+     */
+    public String option1Sublabel();
+    
 }

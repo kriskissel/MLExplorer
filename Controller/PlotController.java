@@ -105,6 +105,9 @@ public class PlotController {
             
             // add to figure
             plot.addCircle(point.getX(), point.getY(), this.CIRCLE_RADIUS);
+            
+            demoPanel.setOption1Value(model.getOption1Value(), 
+                    model.getOption1Sublabel());
         }
         
         for (int i = 0; i < currentData.getCurves().size(); i++){
@@ -263,5 +266,18 @@ public class PlotController {
         }
     }
 
+    public void increaseOption1() {
+        pause();
+        System.out.println("Plotcontroller Increasing option 1");
+        model.increaseOption1();
+        reset();
+    }
+    
+    public void decreaseOption1() {
+        pause();
+        System.out.println("Plotcontroller Decreasing option 1");
+        model.decreaseOption1();
+        reset();
+    }
     
 }

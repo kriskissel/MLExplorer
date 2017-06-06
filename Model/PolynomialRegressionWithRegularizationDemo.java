@@ -6,7 +6,9 @@ import java.util.List;
 import Common.ModelInterface;
 import Controller.Demo;
 
-public class PolynomialRegressionBiasVarianceTradeoffDemo implements Demo {
+public class PolynomialRegressionWithRegularizationDemo implements Demo {
+    
+    private ModelInterface model;
     
     private static String points = "points\n" +
             "-6.50000000,-4.37748820,-1\n" +
@@ -42,7 +44,8 @@ public class PolynomialRegressionBiasVarianceTradeoffDemo implements Demo {
     
     @Override
     public ModelInterface getModel(String initialDataSet) {
-        return new LinearRegressionVarianceModel(initialDataSet);
+        model = new LinearRegressionVarianceModel(initialDataSet);
+        return model;
     }
 
     @Override
@@ -80,22 +83,22 @@ public class PolynomialRegressionBiasVarianceTradeoffDemo implements Demo {
     
     @Override
     public boolean option1used() {
-        return false;
+        return true;
     }
 
     @Override
     public String option1Label() {
-        return "";
+        return "L2 Regularization Coefficient";
     }
 
     @Override
     public String option1Value() {
-        return "";
+        return model.getOption1Value();
     }
     
     @Override
     public String option1Sublabel() {
-        return "";
+        return model.getOption1Sublabel();
     }
 
 }

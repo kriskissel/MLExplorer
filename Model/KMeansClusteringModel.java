@@ -245,5 +245,25 @@ public class KMeansClusteringModel extends PointsAndCurvesAbstractModel {
         checkRep();
         this.stoppedChangingClusters = false;
     }
+    
+    @Override
+    public void increaseOption1() {
+        // pass
+    }
+    
+    @Override
+    public void decreaseOption1() {
+        // pass
+    }
+    
+    @Override
+    public String getOption1Value() {
+        return "";
+    }
+    
+    @Override
+    public String getOption1Sublabel() {
+        return "";
+    }
 
 }

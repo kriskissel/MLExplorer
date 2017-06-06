@@ -32,7 +32,10 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
     private int degreeOfPolynomial = 1; // 1 is the default
     private List<Integer> samplePointIndices;
     private double ALPHA_FOR_CURVES = 0.2;
-
+    private double l2_coefficient = 0;
+    private double total_square_error = 0;
+    private List<Double> xCoords;
+    private List<Double> yCoords;
     
     @Override
     protected void checkRep() {
@@ -48,7 +51,10 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
     void parseInitialData(String dataSet){
         this.points = new ArrayList<Tuple>();
         this.pointClasses = new ArrayList<Integer>();
+        this.xCoords = new ArrayList<Double>();
+        this.yCoords = new ArrayList<Double>();
         ArrayList<Double> w = new ArrayList<Double>();
+        
         String[] lines = dataSet.split("\n");
         String mode = "not set";
         for (String line : lines) {
@@ -63,6 +69,8 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
                     int c = Integer.parseInt(entries[2]);
                     points.add(new Tuple(x,y));
                     pointClasses.add(c);
+                    xCoords.add(x);
+                    yCoords.add(y);
                 }
                 else if (mode.equals("samplesize")) {
                     this.pointsPerSample = Integer.parseInt(entries[0]);
@@ -72,6 +80,7 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
                 }
             }
         }
+        
     }
     
     
@@ -155,7 +164,10 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
             
             double[] coeffs = 
                     Regression.polynomialRegressionAutoReduceDegree(xCoordinates, yCoordinates, 
-                            degreeOfPolynomial);
+                            degreeOfPolynomial, l2_coefficient);
+            
+            // update the mean variance using ALL xCoords and yCoords
+            total_square_error += Regression.squareError(coeffs, xCoords, yCoords);
             
             // finally we add the regression curve and an
             // appropriate color code to newModel
@@ -212,8 +224,32 @@ public class LinearRegressionVarianceModel extends PointsAndCurvesAbstractModel 
         modelHistory.add(startingModel);
         this.K = 0;
         checkRep();
+        this.total_square_error = 0.0;
         
-        
+    }
+    
+    @Override
+    public void increaseOption1() {
+        l2_coefficient += 1;
+        System.out.println("l2_coefficient: " + l2_coefficient);
+    }
+    
+    @Override
+    public void decreaseOption1() {
+        l2_coefficient -= 1;
+        l2_coefficient = l2_coefficient < 0 ? 0 : l2_coefficient;
+        System.out.println("l2_coefficient: " + l2_coefficient);
+    }
+    
+    @Override
+    public String getOption1Value() {
+        return ""+l2_coefficient;
+    }
+    
+    @Override
+    public String getOption1Sublabel() {
+        double mean_square_error = total_square_error / ((float) (1 + ((K+1) / 3)));
+        return String.format("Mean Square Error: %.3f", mean_square_error);
     }
     
 }

@@ -63,5 +63,25 @@ public class LinearRegressionVarianceDemo implements Demo {
         initialDataSets.add(demo4);
         return initialDataSets;
     }
+    
+    @Override
+    public boolean option1used() {
+        return false;
+    }
+
+    @Override
+    public String option1Label() {
+        return "";
+    }
+
+    @Override
+    public String option1Value() {
+        return "";
+    }
+    
+    @Override
+    public String option1Sublabel() {
+        return "";
+    }
 
 }

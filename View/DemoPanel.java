@@ -17,12 +17,19 @@ public class DemoPanel extends BorderPane {
     Label descriptionLabel;
     private StringListener textListener;
     ChoiceBox<String> choiceBox;
-    
+    boolean option1Show = false;
+    Label option1Label = new Label();
+    Label option1Value = new Label();
+    Label option1Sublabel = new Label();
+    VBox optionsPanel;
+    Button option1up;
+    Button option1down;
 
     
     public DemoPanel(String title, String description){
         super();
         this.setPadding(new Insets(10, 10, 10, 10));
+        
         
         // Create title and description for top of pane
         VBox titleBox = new VBox(10);
@@ -65,9 +72,27 @@ public class DemoPanel extends BorderPane {
         VBox controlPanel = new VBox(10);
         controlPanel.getChildren().addAll(controls, demoSelections);
         
+        // Options Panel will be to the right of the plot
+        optionsPanel = new VBox(10);
+        option1Label = new Label("option1Label");
+        option1Value = new Label("option1value");
+        option1Sublabel = new Label("option1sublabel");
+        option1up = new Button("UP");
+        option1up.setOnAction((e) -> emitMessageText("option1UP"));
+        option1down = new Button("DOWN");
+        option1down.setOnAction((e) -> emitMessageText("option1DOWN"));
+        optionsPanel.setPadding(new Insets(10, 10, 10, 10));
+        optionsPanel.setMinWidth(200);
+        if (option1Show){
+            optionsPanel.getChildren().addAll(option1Label, option1Value, 
+                option1up, option1down, option1Sublabel);
+            this.setRight(optionsPanel);
+        }
+        
         this.setTop(titleBox);
         this.setCenter(new Label("Visualization"));
         this.setBottom(controlPanel);
+
     }
     
     public void setNumberOfDemos(int N){
@@ -102,6 +127,27 @@ public class DemoPanel extends BorderPane {
     
     public void setStringListener(StringListener listener){
         this.textListener = listener;
+    }
+    
+    public void showOption1(boolean show, String label, String value, String sublabel) {
+        option1Label.setText(label); 
+        option1Value.setText(value);
+        option1Sublabel.setText(sublabel);
+        option1Show = show;
+        if (!show) {
+            optionsPanel.getChildren().removeAll(option1Label, option1Value, 
+                    option1up, option1down, option1Sublabel);
+                this.setRight(optionsPanel);
+        } else {
+            optionsPanel.getChildren().addAll(option1Label, option1Value, 
+                    option1up, option1down, option1Sublabel);
+                this.setRight(optionsPanel);
+        }
+    }
+    
+    public void setOption1Value(String text1, String text2) {
+        option1Value.setText(text1);
+        option1Sublabel.setText(text2);
     }
     
 }

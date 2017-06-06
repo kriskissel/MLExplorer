@@ -15,9 +15,10 @@ public class DemoButtons extends VBox {
         this.setPadding(new Insets(10,10,10,10));
         
         Button button1 = new Button("Perceptron");
-        Button button2 = new Button("Linear Regression: Variance");
-        Button button3 = new Button("Bias-Variance Tradeoff");
+        Button button2 = new Button("Linear Regression:\nVariance");
+        //Button button3 = new Button("Bias-Variance Tradeoff");
         Button button4 = new Button("K-Means Clustering");
+        Button button5 = new Button("Regularization");
         
         button1.setOnAction(e -> {
             if (this.textListener != null) {
@@ -31,11 +32,13 @@ public class DemoButtons extends VBox {
             }
         });
         
+        /*
         button3.setOnAction(e -> {
             if (this.textListener != null) {
                 this.textListener.textEmitted("Bias-Variance Tradeoff");
             }
         });
+        */
         
         button4.setOnAction(e -> {
             if (this.textListener != null) {
@@ -43,7 +46,14 @@ public class DemoButtons extends VBox {
             }
         });
         
-        this.getChildren().addAll(button1, button2, button3, button4);
+        button5.setOnAction(e -> {
+            if (this.textListener != null) {
+                this.textListener.textEmitted("Regularization");
+            }
+        });
+        
+        //this.getChildren().addAll(button1, button2, button3, button4, button5);
+        this.getChildren().addAll(button1, button2, button4, button5);
     }
 
     public void setStringListener(StringListener listener){

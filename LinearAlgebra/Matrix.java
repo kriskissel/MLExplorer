@@ -447,6 +447,19 @@ public class Matrix {
         return new Matrix(newArray, this.m, matrix.n);
     }
     
+    /**
+     * 
+     * @param matrix must have same dimensions as this
+     * @return sum of this and matrix
+     */
+    public Matrix plus(Matrix matrix){
+        double[] newArray = new double[this.m * this.n];
+        for (int i = 0; i < newArray.length; i++) {
+            newArray[i] = this.array[i] + matrix.array[i];
+        }
+        return new Matrix(newArray, this.m, this.n);
+    }
+    
 
     /**
      * Requires that Ax=b has a solution, where A is this matrix

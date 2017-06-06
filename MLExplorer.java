@@ -5,6 +5,7 @@ import Controller.Demo;
 import Controller.PlotController;
 import Model.PerceptronDemo;
 import Model.PolynomialRegressionBiasVarianceTradeoffDemo;
+import Model.PolynomialRegressionWithRegularizationDemo;
 import Model.KMeansClusteringDemo;
 import Model.LinearRegressionVarianceDemo;
 import View.DemoButtons;
@@ -23,7 +24,7 @@ public class MLExplorer extends Application {
      */
     
     PlotController plotController;
-    int SCENE_WIDTH = 900;
+    int SCENE_WIDTH = 1000;
     int SCENE_HEIGHT = 600;
     DemoPanel demoPanel;
     List<String> descriptions;
@@ -61,6 +62,9 @@ public class MLExplorer extends Application {
                     demoPanel.setDescription(descriptions.get(0));
                     demoPanel.setNumberOfDemos(descriptions.size());
                     demoModel = demo.getModel(initialDataSets.get(0));
+                    demoPanel.showOption1(demo.option1used(), 
+                            demo.option1Label(), demo.option1Value(), 
+                            demo.option1Sublabel());
                     plotController = new PlotController(demoPanel, demoModel);
                     break;
                 
@@ -72,9 +76,12 @@ public class MLExplorer extends Application {
                     demoPanel.setDescription(descriptions.get(0));
                     demoPanel.setNumberOfDemos(descriptions.size());
                     demoModel = demo.getModel(initialDataSets.get(0));
+                    demoPanel.showOption1(demo.option1used(), 
+                            demo.option1Label(), demo.option1Value(),
+                            demo.option1Sublabel());
                     plotController = new PlotController(demoPanel, demoModel);
                     break;
-                    
+                /*   
                 case "Bias-Variance Tradeoff":
                     demo = new PolynomialRegressionBiasVarianceTradeoffDemo();
                     descriptions = demo.getDescriptions();
@@ -83,8 +90,12 @@ public class MLExplorer extends Application {
                     demoPanel.setDescription(descriptions.get(0));
                     demoPanel.setNumberOfDemos(descriptions.size());
                     demoModel = demo.getModel(initialDataSets.get(0));
+                    demoPanel.showOption1(demo.option1used(), 
+                            demo.option1Label(), demo.option1Value(),
+                            demo.option1Sublabel());
                     plotController = new PlotController(demoPanel, demoModel);
                     break;
+                */
                     
                 case "K-Means Clustering":
                     demo = new KMeansClusteringDemo();
@@ -94,6 +105,23 @@ public class MLExplorer extends Application {
                     demoPanel.setDescription(descriptions.get(0));
                     demoPanel.setNumberOfDemos(descriptions.size());
                     demoModel = demo.getModel(initialDataSets.get(0));
+                    demoPanel.showOption1(demo.option1used(), 
+                            demo.option1Label(), demo.option1Value(), 
+                            demo.option1Sublabel());
+                    plotController = new PlotController(demoPanel, demoModel);
+                    break;
+                    
+                case "Regularization":
+                    demo = new PolynomialRegressionWithRegularizationDemo();
+                    descriptions = demo.getDescriptions();
+                    initialDataSets = demo.getInitialDataSets();
+                    demoPanel.setTitle(demo.getTitle());
+                    demoPanel.setDescription(descriptions.get(0));
+                    demoPanel.setNumberOfDemos(descriptions.size());
+                    demoModel = demo.getModel(initialDataSets.get(0));
+                    demoPanel.showOption1(demo.option1used(), 
+                            demo.option1Label(), demo.option1Value(), 
+                            demo.option1Sublabel());
                     plotController = new PlotController(demoPanel, demoModel);
                     break;
                     
@@ -171,6 +199,14 @@ public class MLExplorer extends Application {
         case "screenshot":
             plotController.pause();
             plotController.saveScreenShotAsPNG(window);
+            break;
+        case "option1UP":
+            System.out.println("received message option1up");
+            plotController.increaseOption1();
+            break;
+        case "option1DOWN":
+            System.out.println("received message option1down");
+            plotController.decreaseOption1();
         default:
             if (message.length() > 4 && message.substring(0, 4).equals("Demo")){
                 int demoNumber = Integer.parseInt(message.substring(5)) - 1;

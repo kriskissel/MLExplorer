@@ -36,4 +36,13 @@ public interface ModelInterface {
      */
     public ModelData previous();
     
+    
+    public void increaseOption1();
+    
+    public void decreaseOption1();
+    
+    public String getOption1Value();
+    
+    public String getOption1Sublabel();
+    
 }
